@@ -9,6 +9,7 @@ import kukuCalm from './assets/kuku-calm.png'
 import { initAudio, playTheme, sfx, isMuted, setMuted } from './audio.js'
 import { createBackground } from './bg.js'
 import { createBook, TOTAL as BOOK_TOTAL } from './book.js'
+import { createWrapped } from './wrapped.js'
 
 const CAT = Object.fromEntries(
   Object.entries(import.meta.glob('./assets/cats/*.webp', { eager: true, import: 'default' }))
@@ -28,7 +29,7 @@ const params = new URLSearchParams(location.search)
 const ALI_MODE = params.has('ali')
 // ?ali&wait = fake 20-second countdown, to test the reveal
 const TARGET = params.has('wait') ? Date.now() + 20000 : ALI_MODE ? 0 : BIRTHDAY
-const TOTAL_EGGS = 17
+let TOTAL_EGGS = 0 // set from EGGS below
 
 $$('.kuku-src').forEach((img) => (img.src = CAT.angry))
 $('#favicon').href = CAT.angry
@@ -63,7 +64,7 @@ soundBtn.addEventListener('click', () => {
   else say('silence. fine.', 1800)
 })
 // every level has its own theme
-const THEME_BY_LEVEL = ['gate', 'wordle', 'cave', 'anime', 'gym', 'cake', 'time', 'letter']
+const THEME_BY_LEVEL = ['gate', 'wordle', 'cave', 'anime', 'gym', 'cake', 'time', 'wrapped', 'letter']
 const io = new IntersectionObserver((entries) => {
   for (const e of entries) if (e.isIntersecting) playTheme(THEME_BY_LEVEL[+e.target.dataset.level])
 }, { threshold: 0.35 })
@@ -221,6 +222,8 @@ const EGGS = {
   bro: 'Let your brother steal three pieces',
   resist: 'Resisted the Cinnabon',
   candles: 'Blew out all 22 candles by hand',
+  sob: 'Made it rain 😭',
+  flush: 'Flushed 12 times',
 }
 const HINTS = {
   gst: 'A clock that does not exist.',
@@ -240,7 +243,11 @@ const HINTS = {
   bro: 'Let the brother win.',
   resist: 'Say no to cinnamon.',
   candles: 'Skip the mic. Do the candles yourself.',
+  sob: 'Hold the crying.',
+  flush: 'Twelve is the magic number.',
 }
+TOTAL_EGGS = Object.keys(EGGS).length
+$('#eggTotal').textContent = TOTAL_EGGS
 book = createBook({
   CAT, state, save, sfx, gsap, reduced, eggs: { EGGS, HINTS },
   onComplete: () => setTimeout(() => {
@@ -350,7 +357,8 @@ function unlock(n) {
     4: ['gym arc. i am your coach now.', 'buff'],
     5: ['make a wish. not a dumb one.', 'yay'],
     6: ['history lesson.', 'flower'],
-    7: ['he wrote this himself. i checked.', 'eyes'],
+    7: ['wrapped. kuku did the maths. kuku is tired.', 'eyes'],
+    8: ['he wrote this himself. i checked.', 'eyes'],
   }
   if (intros[n]) {
     // don't stomp on a reaction that's still showing; wait for it to finish
@@ -1193,6 +1201,9 @@ function enterSite(firstTime = false) {
   schedulePeek(9000, 16000)
 }
 
+/* ---------------- wrapped ---------------- */
+const wrapped = createWrapped({ gsap, state, save, sfx, buzz, say, mood, egg, reduced, book, unlock, burst, playTheme })
+
 /* ---------------- phone hardening ---------------- */
 // no "save image" menu on long-press
 document.addEventListener('contextmenu', (e) => { if (e.target.closest('img, .kuku, .peeker, .sb-slot')) e.preventDefault() })
@@ -1211,13 +1222,14 @@ document.addEventListener('visibilitychange', () => {
 // share her score with Ali on WhatsApp
 $('#shareScore').addEventListener('click', () => {
   const s = book?.count() ?? 0
-  const text = `Kuku report: I found ${state.eggs.length}/${TOTAL_EGGS} easter eggs and ${s}/${BOOK_TOTAL} things for my sticker book. ${state.pets >= 15 ? 'Kuku likes me now.' : 'Kuku still hates me.'} 😾`
+  const wr = wrapped?.done() ? ` Wrapped: ${wrapped.score()}/${wrapped.total}.` : ''
+  const text = `Kuku report: I found ${state.eggs.length}/${TOTAL_EGGS} easter eggs and ${s}/${BOOK_TOTAL} things for my sticker book.${wr} ${state.pets >= 15 ? 'Kuku likes me now.' : 'Kuku still hates me.'} 😾`
   location.href = `https://wa.me/?text=${encodeURIComponent(text)}`
 })
 
 /* ---------------- boot ---------------- */
 showUpTo(state.level)
-if (params.has('all')) { state.level = 7; state.revealed = true; showUpTo(7) }
+if (params.has('all')) { state.level = 8; state.revealed = true; showUpTo(8) }
 if (state.finale) { $('#finale').hidden = false; $('#getLost').parentElement.hidden = true; renderFinale() }
 runLoader()
 // the open button runs away a few times before it lets her in

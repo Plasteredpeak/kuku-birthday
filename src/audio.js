@@ -212,6 +212,17 @@ THEMES.gym = {
     79, null, 79, 83, null, 79, 78, null, 74, null, 78, null, 81, null, 83, null],
   padVol: 0.02,
 }
+// wrapped: bright "year in review" synth-pop in D major, kick + hats + sparkly arps
+THEMES.wrapped = {
+  bpm: 116, spb: 8, lead: 'bell', leadVol: 0.12, kick: true, hats: true, arp: [0, 1, 2, 3, 2, 1, 2, 3], arpVol: 0.06,
+  bars: [
+    { chord: [50, 54, 57, 62], bass: 38 }, { chord: [47, 50, 54, 59], bass: 35 },
+    { chord: [43, 47, 50, 55], bass: 31 }, { chord: [45, 49, 52, 57], bass: 33 },
+  ],
+  melody: [78, null, 81, null, 78, 76, null, 74, 76, null, null, 74, 71, null, null, null,
+    74, null, 76, null, 78, null, 79, 78, 76, null, 73, null, 76, null, null, null],
+  padVol: 0.03,
+}
 THEMES.time = THEMES.letter
 
 /* ---------------- scheduler ---------------- */

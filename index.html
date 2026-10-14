@@ -64,7 +64,7 @@
         <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 6.5c3.5-1.6 7-1.6 11 .8v19c-4-2.4-7.5-2.4-11-.8z" fill="#ff8fb6" stroke="#eef1ff" stroke-width="2" stroke-linejoin="round"/><path d="M27 6.5c-3.5-1.6-7-1.6-11 .8v19c4-2.4 7.5-2.4 11-.8z" fill="#ffcf6b" stroke="#eef1ff" stroke-width="2" stroke-linejoin="round"/></svg>
       </button>
       <button class="sound-btn" id="soundBtn" type="button" aria-label="Turn sound off"><img id="soundIcon" alt="" /></button>
-      <span class="hud-eggs" id="hudEggs" aria-live="polite"><span class="egg-icon" aria-hidden="true"></span><b id="eggCount">0</b>/17</span>
+      <span class="hud-eggs" id="hudEggs" aria-live="polite"><span class="egg-icon" aria-hidden="true"></span><b id="eggCount">0</b>/<span id="eggTotal">19</span></span>
     </div>
   </header>
 
@@ -254,12 +254,18 @@
         </li>
       </ol>
       <div class="after">
-        <button class="btn btn-main" data-next="7" type="button">Open the letter</button>
+        <button class="btn btn-main" data-next="7" type="button">See your Wrapped</button>
       </div>
     </section>
 
-    <!-- 7 · letter -->
-    <section class="level" id="lv-letter" data-level="7" hidden>
+    <!-- 7 · wrapped -->
+    <section class="level level-wrapped" id="lv-wrapped" data-level="7" hidden>
+      <div class="wr-bars" id="wrappedBars" aria-hidden="true"></div>
+      <div class="wr-card" id="wrappedCard" aria-live="polite"></div>
+    </section>
+
+    <!-- 8 · letter -->
+    <section class="level" id="lv-letter" data-level="8" hidden>
       <article class="letter" id="letter">
         <p>Happy birthday Dumbo. 22. Almost expiring now.</p>
         <p>Before you say anything, yes, I'm on time. 12 o'clock, Pakistani 12. Took me three years but I got there. In 2024 I was almost a day late because dates are subjective. In 2025 I was on time but called you a 16-year-old. So this year I made you a whole website to show how much idgaf.</p>

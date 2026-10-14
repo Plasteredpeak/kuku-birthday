@@ -13,6 +13,7 @@ export const STICKERS = [
   { id: 'calm', page: 'kuku', name: 'Calm Kuku', note: 'Only exists after 15 pets. Do not tell anyone she has feelings.', hint: 'Pet her. A lot. After 12.' },
   { id: 'heart', page: 'kuku', name: 'Soft Kuku', note: 'Holding a heart. Will deny it.', hint: 'Earn her love.' },
   { id: 'finger', page: 'kuku', name: 'Rude Kuku', note: 'Exactly what it looks like.', hint: 'Tell her to get lost.' },
+  { id: 'wrapped', page: 'kuku', name: 'Wrapped Kuku', note: 'Got 6/6 on Wrapped. Suspicious. Did you read the chat export?', hint: 'Know him perfectly. 6 out of 6.' },
   // guest stars
   { id: 'batman', page: 'guests', name: 'Batman (Ali)', note: "I'm Batman. He's not.", hint: 'Ali hides in two places.' },
   { id: 'gojo', page: 'guests', name: 'Gojo', note: 'Throughout heaven and earth, he alone is the pretty one. Kuku disagrees.', hint: 'Blindfolded. Anime corner.' },
@@ -55,6 +56,10 @@ export const QUOTES = [
   { id: 'q-khana', text: 'zzz... khana khalo... zzz', hint: 'Do nothing.' },
   { id: 'q-born', text: '1:30pm. you were born now-ish. I remember things. sometimes.', hint: 'Come back at the right time.' },
   { id: 'q-back', text: "...i came back. you didn't go either. good.", hint: 'Get lost.' },
+  { id: 'q-idk', text: 'Trick question. 26 each. The one thing you two agree on is not knowing.', hint: 'Wrapped. A question with no wrong answer.' },
+  { id: 'q-perfect', text: 'suspicious. did you read the chat export', hint: 'Wrapped. Get everything right.' },
+  { id: 'q-sob', text: 'this is your fault.', hint: 'Wrapped. Hold the crying.' },
+  { id: 'q-flush', text: "he's in there right now probably.", hint: 'Wrapped. Twelve is the magic number.' },
 ]
 
 export const TOTAL = STICKERS.length + QUOTES.length
@@ -63,7 +68,7 @@ const PAGES = [
   { id: 'kuku', title: 'Kuku', sub: 'Every Kuku mood. Collect them by making her feel things.' },
   { id: 'guests', title: 'Guest stars', sub: 'Uninvited, mostly.' },
   { id: 'quotes', title: 'Things Kuku said', sub: 'Hear a line once and it sticks here forever.' },
-  { id: 'eggs', title: 'Easter eggs', sub: 'The 17 hidden things.' },
+  { id: 'eggs', title: 'Easter eggs', sub: '' },
   { id: 'last', title: 'Last page', sub: '' },
 ]
 
@@ -152,7 +157,7 @@ export function createBook({ CAT, state, save, sfx, gsap, reduced, eggs, onCompl
   function render(dir = 0) {
     const p = PAGES[page]
     $('#bookTitle').textContent = p.id === 'last' && !complete() ? 'Last page' : p.title
-    $('#bookSub').textContent = p.sub
+    $('#bookSub').textContent = p.id === 'eggs' ? `The ${Object.keys(eggs.EGGS).length} hidden things.` : p.sub
     $('#bookCount').textContent = `${count()} of ${TOTAL} collected`
     $('#bookBar').style.width = `${(count() / TOTAL) * 100}%`
     $('#bookPageNo').textContent = `${page + 1} / ${PAGES.length}`

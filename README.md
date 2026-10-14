@@ -17,7 +17,7 @@ Kuku, an angry cat sticker, guides her through seven levels, comments on everyth
 | `/kuku-birthday/?ali` | Skips the countdown: the reveal button shows straight away. |
 | `/kuku-birthday/?ali&wait&reset` | Fakes a 20-second countdown so you can watch the reveal happen, from a fresh start. |
 | `/kuku-birthday/?ali&reset` | Skips the countdown and wipes saved progress (levels, eggs, pets, Wordle). |
-| `/kuku-birthday/?ali&all` | Unlocks every level at once, to jump straight to any section. |
+| `/kuku-birthday/?ali&all` | Unlocks every level at once (all 9), to jump straight to any section. |
 
 Progress is saved in the browser (localStorage), so if she closes the tab she'll pick up where she left off. **Before sending the link, open it once with `?reset`** on your own phone, so your test progress doesn't confuse you later.
 
@@ -62,13 +62,14 @@ Each level unlocks the next one. Every level has its own music track.
 | 4 | **Gym arc** | Her 23 Sep gym trip ("omw back to home… gym", holding a Cinnabon). Tap **Curl** 22 times (one per year) while buff Kuku squashes and Kuku coaches ("What's the point of gym – Ali, 23 Sep"). At 22, a Cinnabon appears: **Eat it** ("You ate half. 'I didnt eat it pura.' Respect.") or **Resist** ("Character development. Kuku ate it instead."). | Training montage: kick drum and punchy bells |
 | 5 | **Cake** | 22 candles. "Blow out the candles" uses the mic, so she blows into the phone. "My mic is shy" lets her tap each candle instead. | Happy Birthday on a music box |
 | 6 | **Timeline** | 2024 (almost a day late), 2025 (on time, "Ur big 16"), 2026 (on time plus a website). | Soft piano |
-| 7 | **Letter** | Ali's letter with the translation guide, then the "Get lost" button, then the finale with her easter-egg score and hints for the ones she missed. | Soft piano |
+| 7 | **Wrapped** | "Samiya × Ali: Wrapped", a story-style quiz from the real chat export (16 Jun 2024 → 14 Oct 2026). Cards: intro → 7,465 messages → who texts more (3,943 vs 3,522; she texted first on 127 of 196 days) → voice notes (144 vs 8) → emojis (😭 ×122 vs 😂 ×27) → insults (~60 Ali vs ~35 her, with breakdowns) → "idk" trick question (26 = 26, always correct) → toilet announcements (3 / 7 / **12**) → score /6 with summary, **Copy my Wrapped**, **Play again** (if under 6/6) and **Open the letter**. Bars count up from 0, ✓/✗ on her pick, Kuku goes yay/crying with a short aside. Answers and position are saved. | Bright "year in review" synth-pop |
+| 8 | **Letter** | Ali's letter with the translation guide, then the "Get lost" button, then the finale with her easter-egg score and hints for the ones she missed. | Soft piano |
 
 ---
 
-## All 17 easter eggs
+## All 19 easter eggs
 
-Each one shows a yellow toast ("Easter egg n/17"), plays a jingle, buzzes the phone and adds to the counter in the top right. At the end, she sees which ones she found and gets a hint for each one she missed.
+Each one shows a yellow toast ("Easter egg n/19"), plays a jingle, buzzes the phone and adds to the counter in the top right. At the end, she sees which ones she found and gets a hint for each one she missed.
 
 | # | Egg (id) | How to get it | What happens | Hint shown at the end |
 |---|---|---|---|---|
@@ -88,6 +89,8 @@ Each one shows a yellow toast ("Easter egg n/17"), plays a jingle, buzzes the ph
 | 14 | Sleepy Kuku (`idle`) | **Don't touch anything for 45 seconds** | Kuku falls asleep: "zzz... khana khalo... zzz". Tap to wake her ("i was SLEEPING.") | Do nothing for a while. |
 | 16 | Resist (`resist`) | In the gym level, after 22 curls, choose **Resist** instead of eating the Cinnabon | Buff Kuku: "resisted. ali is shook." | Say no to cinnamon. |
 | 17 | By hand (`candles`) | Blow out all 22 candles **by tapping them** (with "My mic is shy" or just tapping), without the mic blowing any | "by HAND. all 22. dedication." | Skip the mic. Do the candles yourself. |
+| 18 | 😭 rain (`sob`) | In Wrapped, after answering the emoji card, **long-press the 😭 option** | It rains 😭. "this is your fault." | Hold the crying. |
+| 19 | Flush (`flush`) | In Wrapped's toilet card, **tap the 🚽 in the corner 12 times** | It spins down the drain and a wave crosses the card. "he's in there right now probably." | Twelve is the magic number. |
 | 15 | Brother (`bro`) | In the chocolate bar, keep eating until the **brother has stolen 3 pieces** (each bite has a 45% chance he steals one) | Kuku: "you let him win. very big sister of you." | Let the brother win. |
 
 ### Other secrets (not counted as eggs)
@@ -102,7 +105,7 @@ Each one shows a yellow toast ("Easter egg n/17"), plays a jingle, buzzes the ph
 
 ## Sticker book
 
-A **📖 book button** in the top bar (after the reveal) opens Samiya's sticker book. Everything she finds sticks in it automatically and is saved, so it fills up as she plays. **48 collectibles: 16 stickers + 32 Kuku lines.**
+A **📖 book button** in the top bar (after the reveal) opens Samiya's sticker book. Everything she finds sticks in it automatically and is saved, so it fills up as she plays. **53 collectibles: 17 stickers + 36 Kuku lines.** (Wrapped added the **Wrapped Kuku** sticker for a perfect 6/6, plus 4 Wrapped lines.)
 
 - **New finds:** a pink "+ sticker: Sleepy Kuku" / "+ quote for the book" pop-up, and a red count badge on the book button until she opens it.
 - **Pages** (tabs at the top, ‹ › arrows, or swipe left/right):
@@ -110,7 +113,7 @@ A **📖 book button** in the top bar (after the reveal) opens Samiya's sticker 
   2. **Guest stars**: Batman (Ali), Gojo, Samiya angry, Sign cat "ur short", Sign cat "UR GAY.".
   3. **Things Kuku said**: 32 lines. Unheard ones show as blacked-out word bars with a hint underneath.
   4. **Easter eggs**: all 17, found ones ticked, missing ones as ??? with hints.
-  5. **Last page**: padlocked ("This page is stuck shut") until all 48 are collected. Then it shows the heart cat and a note from Ali ending in "Noob. (See the translation guide, line one.)"
+  5. **Last page**: padlocked ("This page is stuck shut") until all 53 are collected. Then it shows the heart cat and a note from Ali ending in "Noob. (See the translation guide, line one.)"
 - **Collected stickers** are taped in at a slight tilt. Tap one to see it big with a caption ("YAYYY Kuku: Pure joy. Rare. Like Ali being on time.").
 - **Uncollected stickers** are dark silhouettes with "???". Tapping one shakes it and shows a hint.
 - **Completing the book:** heart Kuku, confetti and "the sticker book is FULL. go look at the last page. noob."
@@ -183,6 +186,7 @@ index.html              all level markup and the letter text
 src/main.js             loader, countdown, reveal, levels, Wordle, gym, Kuku moods, easter eggs
 src/bg.js               the five animated countdown backgrounds
 src/book.js             the sticker book: collectibles, pages, last page
+src/wrapped.js          the Wrapped quiz: cards, answers, score, its two eggs
 src/audio.js            music themes + sound effects
 src/style.css           styling (Gaegu + Atkinson Hyperlegible fonts)
 src/assets/cats/*.webp  stickers (background removed, white outline)
