@@ -42,7 +42,9 @@ const KEY = 'kuku-bday-v1'
 let state = { level: 0, eggs: [], pets: 0, guesses: [], candlesOut: false, finale: false, revealed: false, gym: null, introduced: false, wordleFails: 0 }
 try {
   if (params.has('reset')) localStorage.removeItem(KEY)
-  const saved = JSON.parse(localStorage.getItem(KEY) || 'null')
+  let saved = JSON.parse(localStorage.getItem(KEY) || 'null')
+  // a ?ali&complete preview must never leak into the real link: start fresh
+  if (saved?.preview && !params.has('ali')) { localStorage.removeItem(KEY); saved = null }
   if (saved) state = { ...state, ...saved }
 } catch {}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)) } catch {} }
@@ -252,7 +254,7 @@ $('#eggTotal').textContent = TOTAL_EGGS
 // ?ali&complete: everything unlocked, for Ali to preview the end state (sticker book last page etc.)
 if (ALI_MODE && params.has('complete')) {
   Object.assign(state, {
-    level: 8, revealed: true, introduced: true, finale: true, pets: 20, gym: 'resisted',
+    preview: true, level: 8, revealed: true, introduced: true, finale: true, pets: 20, gym: 'resisted',
     eggs: Object.keys(EGGS), stickers: STICKERS.map((s) => s.id), quotes: QUOTES.map((q) => q.id),
     bookDone: true, bookSeen: 0, guesses: ['DUMBO'], wordleBest: 1, candlesOut: true,
     wrapped: { card: 8, max: 8, done: true, answers: { texts: 0, voice: 0, emoji: 0, insults: 1, idk: 0, toilet: 2 } },
