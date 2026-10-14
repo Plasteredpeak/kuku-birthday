@@ -15,7 +15,7 @@ Kuku, an angry cat sticker, guides her through seven levels, comments on everyth
 |---|---|
 | `/kuku-birthday/` | The real thing. Loader, then the countdown until 12 PKT, then the "Open your surprise" button. |
 | `/kuku-birthday/?ali` | Skips the countdown: the reveal button shows straight away. |
-| `/kuku-birthday/?ali&wait&reset` | Fakes a 20-second countdown so you can watch the reveal happen, from a fresh start. |
+| `/kuku-birthday/?ali&wait&reset` | Fakes a 20-second countdown so you can watch the reveal happen, from a fresh start. Use `?ali&wait=60&reset` for a longer one. |
 | `/kuku-birthday/?ali&reset` | Skips the countdown and wipes saved progress (levels, eggs, pets, Wordle). |
 | `/kuku-birthday/?ali&all` | Unlocks every level at once (all 9), to jump straight to any section. |
 
@@ -31,7 +31,9 @@ Progress is saved in the browser (localStorage), so if she closes the tab she'll
    - eyes: "Kuku is ME. the angry cat. not you."
    - flower: "you're Samiya. the birthday one."
    - angry: "i'm the mascot of this website. being angry is my whole personality."
+   - music: "turn your sound ON. kuku made music for this. (ali did not.)"
    - buff: "i'll be in the corner the whole time. tap me and i'll react. badly."
+   - eyes: "also: 19 easter eggs are hidden everywhere. poke everything. hold things. shake things. mess with all of it."
    - sleep: "right now my job is guarding your surprise until 12. Pakistani 12. come wait with me." (or yay: "and it's already 12. so. let's go." if it's past 12)
 
    Then **ok Kuku. show me the timer**.
@@ -103,9 +105,26 @@ Each one shows a yellow toast ("Easter egg n/19"), plays a jingle, buzzes the ph
 
 ---
 
+## Nothing is missable
+
+The intro and countdown only happen once, so **nothing collectible lives there**. Eggs can't be earned before the reveal, and no line Kuku says during the intro or countdown goes into the sticker book. Every egg and collectible after the reveal can be retried:
+- **Wordle:** "Play again" after a win too (so HAMZA and Wordle-in-2 stay reachable).
+- **Chocolate bar:** "Unwrap another bar" once it's empty (the brother's steals add up across bars).
+- **Candles:** "Light them again" (so the by-hand egg is reachable even after using the mic).
+- **Cinnabon:** the choice can be changed ("Actually, resist").
+- **Wrapped:** tap the progress bars to jump back to any card already seen (😭 rain and the flush stay reachable), plus "Play again" on the score card.
+- **Start over** (end screen) replays the levels but keeps the reveal, intro, eggs, pets and sticker book, so it never sends her back through the countdown.
+
+## Share card
+
+At the very end, **Make my Kuku Wrapped card** draws a 1080×1350 image from her actual run (`src/card.js`):
+- Kuku's verdict and a sticker based on how much she found: "barely touched Kuku" (crying), "poked a few things" (sparkle), "suspiciously thorough" (yay) or "certified Kuku whisperer" (heart).
+- Tiles: easter eggs, sticker book, Wrapped score, Wordle (best solve or fails), Kuku pets, and the Cinnabon choice.
+- **Send it to Ali** opens the phone's share sheet with the image (WhatsApp etc.). Where image sharing isn't supported it saves the image instead. **Save image** downloads it, and **Send as text** opens WhatsApp with the text report.
+
 ## Sticker book
 
-A **📖 book button** in the top bar (after the reveal) opens Samiya's sticker book. Everything she finds sticks in it automatically and is saved, so it fills up as she plays. **53 collectibles: 17 stickers + 36 Kuku lines.** (Wrapped added the **Wrapped Kuku** sticker for a perfect 6/6, plus 4 Wrapped lines.)
+A **📖 book button** in the top bar (after the reveal) opens Samiya's sticker book. Everything she finds sticks in it automatically and is saved, so it fills up as she plays. **45 collectibles: 17 stickers + 28 Kuku lines.** (Wrapped added the **Wrapped Kuku** sticker for a perfect 6/6, plus 4 Wrapped lines.)
 
 - **New finds:** a pink "+ sticker: Sleepy Kuku" / "+ quote for the book" pop-up, and a red count badge on the book button until she opens it.
 - **Pages** (tabs at the top, ‹ › arrows, or swipe left/right):
@@ -113,7 +132,7 @@ A **📖 book button** in the top bar (after the reveal) opens Samiya's sticker 
   2. **Guest stars**: Batman (Ali), Gojo, Samiya angry, Sign cat "ur short", Sign cat "UR GAY.".
   3. **Things Kuku said**: 32 lines. Unheard ones show as blacked-out word bars with a hint underneath.
   4. **Easter eggs**: all 17, found ones ticked, missing ones as ??? with hints.
-  5. **Last page**: padlocked ("This page is stuck shut") until all 53 are collected. Then it shows a note from Ali and **the only photo of Samiya and Ali together** as a taped polaroid with heart Kuku on the corner ("you: in focus. me: a thumbs up and a lens flare."), ending in "Noob. (See the translation guide, line one.)". The photo (`src/assets/us.jpg`) is resized and has its metadata (including location) stripped. It is the only photo on the site, and like everything in the public repo, the file itself is publicly reachable.
+  5. **Last page**: padlocked ("This page is stuck shut") until all 45 are collected. Then it shows a note from Ali and **the only photo of Samiya and Ali together** as a taped polaroid with heart Kuku on the corner ("you: in focus. me: a thumbs up and a lens flare."), ending in "Noob. (See the translation guide, line one.)". The photo (`src/assets/us.jpg`) is resized and has its metadata (including location) stripped. It is the only photo on the site, and like everything in the public repo, the file itself is publicly reachable.
 - **Collected stickers** are taped in at a slight tilt. Tap one to see it big with a caption ("YAYYY Kuku: Pure joy. Rare. Like Ali being on time.").
 - **Uncollected stickers** are dark silhouettes with "???". Tapping one shakes it and shows a hint.
 - **Completing the book:** heart Kuku, confetti and "the sticker book is FULL. go look at the last page. noob."
@@ -176,7 +195,8 @@ Not testable here, so check on a real phone: sound, vibration, the mic for the c
 
 ## Extras
 - **WhatsApp preview:** `public/og.jpg` with Open Graph tags.
-- **Send Ali my score:** button at the very end that opens WhatsApp with "Kuku report: I found X/17 easter eggs and Y/48 things for my sticker book…".
+- **Kuku Wrapped share card:** see the Share card section.
+- **Sound and egg reminders:** the loader shows "🔊 sound on, please", and about 6 seconds after the reveal Kuku says "psst. the egg counter is up top. 19 hidden. poke EVERYTHING."
 - **Phone hardening:** no long-press "save image" menus, no double-tap zoom, Samsung's forced dark mode blocked, screen wake lock during the countdown, double-tap guards on the open, ok Kuku and reveal buttons.
 
 ## Project structure
@@ -187,6 +207,7 @@ src/main.js             loader, countdown, reveal, levels, Wordle, gym, Kuku moo
 src/bg.js               the five animated countdown backgrounds
 src/book.js             the sticker book: collectibles, pages, last page
 src/wrapped.js          the Wrapped quiz: cards, answers, score, its two eggs
+src/card.js             the Kuku Wrapped share card (canvas image)
 src/audio.js            music themes + sound effects
 src/style.css           styling (Gaegu + Atkinson Hyperlegible fonts)
 src/assets/cats/*.webp  stickers (background removed, white outline)
