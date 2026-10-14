@@ -10,6 +10,7 @@ import { initAudio, playTheme, sfx, isMuted, setMuted } from './audio.js'
 import { createBackground } from './bg.js'
 import { createBook, TOTAL as BOOK_TOTAL } from './book.js'
 import { createWrapped } from './wrapped.js'
+import { drawCard } from './card.js'
 
 const CAT = Object.fromEntries(
   Object.entries(import.meta.glob('./assets/cats/*.webp', { eager: true, import: 'default' }))
@@ -27,8 +28,8 @@ const pick = (a) => a[Math.floor(Math.random() * a.length)]
 const BIRTHDAY = Date.UTC(2026, 9, 14, 19, 0, 0)
 const params = new URLSearchParams(location.search)
 const ALI_MODE = params.has('ali')
-// ?ali&wait = fake 20-second countdown, to test the reveal
-const TARGET = params.has('wait') ? Date.now() + 20000 : ALI_MODE ? 0 : BIRTHDAY
+// ?ali&wait = fake 20-second countdown (or ?wait=60 for 60s), to test the reveal
+const TARGET = params.has('wait') ? Date.now() + (Number(params.get('wait')) || 20) * 1000 : ALI_MODE ? 0 : BIRTHDAY
 let TOTAL_EGGS = 0 // set from EGGS below
 
 $$('.kuku-src').forEach((img) => (img.src = CAT.angry))
@@ -535,10 +536,13 @@ function finishWordle(won, live = false) {
   if (won) {
     const n = tries()
     msg.textContent = n <= 2 ? `In ${n}. Wordle in 2, as promised.` : `DUMBO. Obviously. ${n}/6.`
+    if (!state.wordleBest || n < state.wordleBest) { state.wordleBest = n; save() }
     if (live) {
       say(n <= 2 ? 'ok that was impressive. noob.' : 'it was always going to be DUMBO.')
       mood('yay', 3000); sfx.win(); burst(0.5, 0.5)
     }
+    $('#retryWordle').textContent = 'Play again'
+    $('#retryWordle').hidden = false
   } else {
     const f = state.wordleFails
     const SHAME = [
@@ -548,6 +552,7 @@ function finishWordle(won, live = false) {
     ]
     const [line, kukuLine, pop] = SHAME[Math.min(f - 1, SHAME.length - 1)] || SHAME[0]
     msg.textContent = line
+    $('#retryWordle').textContent = 'Reset and try again (shameful)'
     $('#retryWordle').hidden = false
     $('#wordleAfter [data-next]').textContent = 'Give up and keep going'
     if (live) { say(kukuLine, 6000); mood('cry', 4000); sfx.lose(); popCat('cry', pop, 2800); buzz([120, 60, 120]) }
@@ -555,6 +560,7 @@ function finishWordle(won, live = false) {
   $('#wordleAfter').hidden = false
 }
 function resetWordle() {
+  const afterWin = state.guesses.includes(ANSWER)
   state.guesses = []; save()
   cur = ''; done = false
   $$('.tile', board).forEach((t) => { t.textContent = ''; t.className = 'tile'; t.style.animationDelay = '' })
@@ -562,9 +568,15 @@ function resetWordle() {
   $('#wordleAfter').hidden = true
   $('#retryWordle').hidden = true
   $('#wordleAfter [data-next]').textContent = 'Keep going'
-  msg.textContent = state.wordleFails > 1 ? 'Round ' + (state.wordleFails + 1) + '. Kuku is not watching. (she is.)' : "Round 2. Don't embarrass me again."
-  mood('eyes', 2000)
-  say(pick(['fine. one more chance.', 'again?? ok.', 'deep breaths. five letters.']))
+  if (afterWin) {
+    msg.textContent = 'New round. Same answer. Obviously.'
+    mood('eyes', 2000)
+    say(pick(['again? it is still DUMBO.', 'try other words. kuku might react.', 'speedrun it.']))
+  } else {
+    msg.textContent = state.wordleFails > 1 ? 'Round ' + (state.wordleFails + 1) + '. Kuku is not watching. (she is.)' : "Round 2. Don't embarrass me again."
+    mood('eyes', 2000)
+    say(pick(['fine. one more chance.', 'again?? ok.', 'deep breaths. five letters.']))
+  }
   board.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' })
 }
 $('#retryWordle').addEventListener('click', resetWordle)
@@ -682,13 +694,23 @@ $('#gojoPeek').addEventListener('click', () => {
 
 const choc = $('#choc')
 let stolen = 0, eaten = 0
-for (let i = 0; i < 12; i++) {
-  const p = document.createElement('button')
-  p.type = 'button'
-  p.setAttribute('aria-label', 'Chocolate piece')
-  p.addEventListener('click', () => eatPiece(p))
-  choc.append(p)
+function fillChoc() {
+  choc.innerHTML = ''
+  eaten = 0
+  for (let i = 0; i < 12; i++) {
+    const p = document.createElement('button')
+    p.type = 'button'
+    p.setAttribute('aria-label', 'Chocolate piece')
+    p.addEventListener('click', () => eatPiece(p))
+    choc.append(p)
+  }
 }
+fillChoc()
+$('#chocRefill').addEventListener('click', () => {
+  fillChoc(); $('#chocRefill').hidden = true
+  $('#broLine').textContent = 'New bar. Guard it.'
+  sfx.shimmer()
+})
 function eatPiece(p) {
   if (p.classList.contains('gone')) return
   p.classList.add('gone'); eaten++; buzz(10); sfx.crunch()
@@ -700,13 +722,13 @@ function eatPiece(p) {
       sfx.whoosh()
       mood('cry', 1500)
       $('#broLine').textContent = pick(['brother stole one 😾', 'BROTHER.', 'he took another', 'gone. he is chewing loudly.'])
-      if (stolen === 3) egg('bro', 'Brother stole three pieces', 'you let him win. very big sister of you.')
+      if (stolen >= 3) egg('bro', 'Brother stole three pieces', 'you let him win. very big sister of you.')
     }, 250)
   } else {
     $('#broLine').textContent = pick(['mine', 'nom', 'hehe', 'safe'])
   }
   if (!$$('button:not(.gone)', choc).length) {
-    setTimeout(() => ($('#broLine').textContent = `You ate ${eaten}. He stole ${stolen}. Classic.`), 300)
+    setTimeout(() => { $('#broLine').textContent = `You ate ${eaten}. He stole ${stolen}. Classic.`; $('#chocRefill').hidden = false }, 300)
   }
 }
 
@@ -719,7 +741,7 @@ for (let i = 0; i < 22; i++) {
   c.addEventListener('click', () => blowOne(c))
   candlesEl.append(c)
 }
-let micBlew = false
+let micBlew = false, candlesFinished = false
 function blowOne(c, byMic = false) {
   if (c.classList.contains('out')) return
   if (byMic) micBlew = true
@@ -729,7 +751,8 @@ function blowOne(c, byMic = false) {
 }
 let micStream, micRaf
 function candlesDone() {
-  if (state.candlesOut && !$('#cakeAfter').hidden) return
+  if (candlesFinished) return
+  candlesFinished = true
   state.candlesOut = true; save()
   stopMic()
   if (!micBlew) setTimeout(() => egg('candles', 'Blew out all 22 candles by hand', 'by HAND. all 22. dedication.'), 1800)
@@ -776,6 +799,13 @@ $('#blowBtn').addEventListener('click', async () => {
     else ctx.close()
   }
   loop()
+})
+$('#relight').addEventListener('click', () => {
+  $$('.candle').forEach((c) => c.classList.remove('out'))
+  micBlew = false; candlesFinished = false
+  $('#cakeMsg').textContent = 'Relit. Make another wish.'
+  sfx.shimmer(); mood('eyes', 2000)
+  say('again? ok. tap them or blow.')
 })
 $('#tapBlow').addEventListener('click', () => {
   $('#cakeMsg').textContent = 'Fine. Tap each candle. All 22.'
@@ -828,7 +858,10 @@ function renderFinale() {
   }).join('')
 }
 $('#replay').addEventListener('click', () => {
-  state = { level: 0, eggs: state.eggs, pets: state.pets, guesses: [], candlesOut: false, finale: false }
+  // keep collections and the one-time intro/reveal; replay the levels only
+  const keep = ['eggs', 'pets', 'stickers', 'quotes', 'bookSeen', 'bookDone', 'revealed', 'introduced', 'wordleFails', 'wordleBest']
+  state = Object.fromEntries(keep.filter((k) => k in state).map((k) => [k, state[k]]))
+  Object.assign(state, { level: 0, guesses: [], candlesOut: false, finale: false })
   save()
   location.href = location.pathname + (ALI_MODE ? '?ali' : '')
 })
@@ -938,7 +971,8 @@ function gymDone() {
 }
 function bunChoice(ate) {
   state.gym = ate ? 'ate' : 'resisted'; save()
-  $$('#bun .choice .btn').forEach((b) => (b.disabled = true))
+  $('#eatBun').textContent = ate ? 'Eat it (again)' : 'Actually, eat it'
+  $('#resistBun').textContent = ate ? 'Actually, resist' : 'Resist (again)'
   if (ate) {
     $('#bunResult').textContent = 'You ate half. "I didnt eat it pura." Respect.'
     mood('yay', 3000); sfx.crunch(); setTimeout(() => sfx.crunch(), 180)
@@ -956,7 +990,8 @@ if (state.gym) {
   reps = 22; renderReps()
   $('#curlBtn').disabled = true; $('#curlBtn').textContent = '22 reps. Done.'
   $('#bun').hidden = false
-  $$('#bun .choice .btn').forEach((b) => (b.disabled = true))
+  $('#eatBun').textContent = state.gym === 'ate' ? 'Eat it (again)' : 'Actually, eat it'
+  $('#resistBun').textContent = state.gym === 'ate' ? 'Actually, resist' : 'Resist (again)'
   $('#bunResult').textContent = state.gym === 'ate' ? 'You ate half. "I didnt eat it pura." Respect.' : 'Character development. Kuku ate it instead.'
   $('#gymAfter').hidden = false
 }
@@ -1030,6 +1065,7 @@ function runLoader() {
           $('.loader-bar').style.visibility = 'hidden'
           $('#loaderPct').style.visibility = 'hidden'
           $('#loaderGo').hidden = false
+          $('#loaderSound').hidden = false
           $('#loaderLine').textContent = state.revealed ? 'welcome back.' : 'something is waiting for you.'
           resolve()
         }
@@ -1137,7 +1173,9 @@ function runIntro() {
       ['eyes', 'Kuku is ME. the angry cat. not you.'],
       ['flower', "you're Samiya. the birthday one."],
       ['angry', "i'm the mascot of this website. being angry is my whole personality."],
+      ['music', 'turn your sound ON. kuku made music for this. (ali did not.)'],
       ['buff', "i'll be in the corner the whole time. tap me and i'll react. badly."],
+      ['eyes', 'also: 19 easter eggs are hidden everywhere. poke everything. hold things. shake things. mess with all of it.'],
       ready ? ['yay', "and it's already 12. so. let's go."] : ['sleep', 'right now my job is guarding your surprise until 12. Pakistani 12. come wait with me.'],
     ]
     const intro = $('#intro'), cat = $('#introCat'), text = $('#introText'), dots = $('#introDots')
@@ -1195,6 +1233,7 @@ function enterSite(firstTime = false) {
     catRain(16)
     mood('yay', 4000)
     say("happy birthday noob. it's 12. YOUR 12.", 5000)
+    setTimeout(() => { mood('eyes', 2500); say('psst. the egg counter is up top. 19 hidden. poke EVERYTHING.', 6000) }, 6500)
   } else {
     say(state.level > 0 ? 'oh. you came back.' : 'hi again. still angry. scroll.')
   }
@@ -1219,13 +1258,63 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && document.body.classList.contains('is-waiting')) keepAwake(true)
 })
 
-// share her score with Ali on WhatsApp
-$('#shareScore').addEventListener('click', () => {
-  const s = book?.count() ?? 0
-  const wr = wrapped?.done() ? ` Wrapped: ${wrapped.score()}/${wrapped.total}.` : ''
-  const text = `Kuku report: I found ${state.eggs.length}/${TOTAL_EGGS} easter eggs and ${s}/${BOOK_TOTAL} things for my sticker book.${wr} ${state.pets >= 15 ? 'Kuku likes me now.' : 'Kuku still hates me.'} 😾`
-  location.href = `https://wa.me/?text=${encodeURIComponent(text)}`
+// share card: a Wrapped-style image of her run, sent to Ali
+function runStats() {
+  return {
+    eggs: state.eggs.length, eggTotal: TOTAL_EGGS,
+    book: book?.count() ?? 0, bookTotal: BOOK_TOTAL,
+    wrapped: wrapped?.done() ? wrapped.score() : null,
+    wordle: state.wordleBest ? `in ${state.wordleBest}` : state.wordleFails ? `${state.wordleFails} fail${state.wordleFails > 1 ? 's' : ''}` : 'unsolved',
+    pets: state.pets, gym: state.gym,
+  }
+}
+function scoreText() {
+  const s = runStats()
+  const wr = s.wrapped != null ? ` Wrapped: ${s.wrapped}/6.` : ''
+  return `Kuku report: I found ${s.eggs}/${s.eggTotal} easter eggs and ${s.book}/${s.bookTotal} things for my sticker book.${wr} ${s.pets >= 15 ? 'Kuku likes me now.' : 'Kuku still hates me.'} 😾`
+}
+let cardBlob = null, cardUrl = null
+async function openShareCard() {
+  $('#shareModal').hidden = false
+  $('#shareStatus').textContent = 'Kuku is drawing your card…'
+  try {
+    const canvas = await drawCard(runStats(), CAT)
+    cardBlob = await new Promise((r) => canvas.toBlob(r, 'image/png'))
+    if (cardUrl) URL.revokeObjectURL(cardUrl)
+    cardUrl = URL.createObjectURL(cardBlob)
+    $('#shareImg').src = cardUrl
+    $('#shareStatus').textContent = 'Your Kuku Wrapped. Send it to him.'
+    if (!reduced) gsap.fromTo('#shareImg', { scale: 0.85, rotate: -3, opacity: 0 }, { scale: 1, rotate: 0, opacity: 1, duration: 0.5, ease: 'back.out(1.8)' })
+    sfx.shimmer(); mood('yay', 2500)
+  } catch {
+    $('#shareStatus').textContent = "Couldn't draw the card. Use Send as text."
+  }
+}
+function saveCard() {
+  if (!cardUrl) return
+  const a = document.createElement('a')
+  a.href = cardUrl; a.download = 'kuku-wrapped.png'
+  document.body.append(a); a.click(); a.remove()
+  $('#shareStatus').textContent = 'Saved. Send it to Ali on WhatsApp.'
+}
+$('#shareScore').addEventListener('click', openShareCard)
+$('#shareSend').addEventListener('click', async () => {
+  if (!cardBlob) return
+  const file = new File([cardBlob], 'kuku-wrapped.png', { type: 'image/png' })
+  try {
+    if (navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ files: [file], text: scoreText() })
+      $('#shareStatus').textContent = 'Sent. Kuku approves.'
+      return
+    }
+  } catch (e) {
+    if (e?.name === 'AbortError') return // she closed the share sheet
+  }
+  saveCard() // no file sharing on this browser: save it instead
 })
+$('#shareSave').addEventListener('click', saveCard)
+$('#shareText').addEventListener('click', () => { location.href = `https://wa.me/?text=${encodeURIComponent(scoreText())}` })
+$('#shareClose').addEventListener('click', () => ($('#shareModal').hidden = true))
 
 /* ---------------- boot ---------------- */
 showUpTo(state.level)

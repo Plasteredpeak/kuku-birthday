@@ -74,10 +74,17 @@ export function createWrapped({ gsap, state, save, sfx, buzz, say, mood, egg, re
   const score = () => CARDS.filter((c) => c.type === 'q' && W.answers[c.key] != null && isRight(c, W.answers[c.key])).length
   const total = QUESTION_KEYS.length
 
+  // tap a bar to jump back to any card she's already seen (so eggs are never missable)
+  bars.addEventListener('click', (e) => {
+    const i = [...bars.children].indexOf(e.target.closest('i'))
+    if (i >= 0 && i <= (W.max || 0) && i !== W.card) go(i)
+  })
   function renderBars() {
+    W.max = Math.max(W.max || 0, W.card)
     ;[...bars.children].forEach((b, i) => {
       b.classList.toggle('done', i < W.card)
       b.classList.toggle('on', i === W.card)
+      b.classList.toggle('seen', i <= W.max)
     })
   }
   function countUp(el, to, { approx = false, dur = 1.1 } = {}) {
@@ -94,6 +101,7 @@ export function createWrapped({ gsap, state, save, sfx, buzz, say, mood, egg, re
         <h3 class="wr-title">Wrapped</h3>
         <p class="wr-text">Two years of chat. Kuku counted everything. Kuku is tired.</p>
         <p class="wr-text wr-strong">Guess right or be judged.</p>
+        <p class="wr-text wr-hint">Tip: tap the bars at the top to go back to any card.</p>
         <button class="btn btn-main wr-next" type="button">Start</button>`
     }
     if (c.type === 'stat') {
@@ -135,7 +143,7 @@ export function createWrapped({ gsap, state, save, sfx, buzz, say, mood, egg, re
       </ul>
       <div class="wr-actions">
         <button class="btn btn-ghost" id="wrCopy" type="button">Copy my Wrapped</button>
-        ${s < total ? '<button class="btn btn-ghost" id="wrAgain" type="button">Play again</button>' : ''}
+        <button class="btn btn-ghost" id="wrAgain" type="button">${s < total ? 'Play again' : 'Play again (for fun)'}</button>
         <button class="btn btn-main" id="wrLetter" type="button">Open the letter</button>
       </div>`
   }
@@ -179,6 +187,7 @@ export function createWrapped({ gsap, state, save, sfx, buzz, say, mood, egg, re
   }
 
   function wireCard(c, animate) {
+    // on an already-answered card the Next button skips ahead to where she was
     root.querySelectorAll('.wr-next').forEach((b) => b.addEventListener('click', () => go(W.card + 1)))
     if (c.type === 'stat') root.querySelectorAll('[data-count]').forEach((el) => countUp(el, +el.dataset.count, { dur: animate ? 1.6 : 0.01 }))
     if (c.type === 'q') {
@@ -207,7 +216,7 @@ export function createWrapped({ gsap, state, save, sfx, buzz, say, mood, egg, re
         const text = `Samiya × Ali: Wrapped — ${s}/${total}\n7,465 messages · I sent 3,943 (Ali 3,522)\n144 voice notes vs his 8 · 😭 × 122\nidk 26 = 26 · Ali in the toilet: 12 times 🚽`
         try { await navigator.clipboard.writeText(text); say('copied. send it to him.') } catch { say("couldn't copy. screenshot it instead.") }
       })
-      $('#wrAgain')?.addEventListener('click', () => { W.answers = {}; W.done = false; save(); say('again. focus this time.'); go(1) })
+      $('#wrAgain')?.addEventListener('click', () => { W.answers = {}; W.done = false; W.max = 0; save(); say('again. focus this time.'); go(1) })
       $('#wrLetter').addEventListener('click', () => unlock(8))
     }
   }

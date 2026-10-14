@@ -26,6 +26,7 @@
     <div class="loader-bar" aria-hidden="true"><span id="loaderBar"></span></div>
     <p class="loader-pct" id="loaderPct">0%</p>
     <button class="btn btn-main loader-go" id="loaderGo" type="button" hidden>Tap to open</button>
+    <p class="loader-sound" id="loaderSound" hidden>🔊 sound on, please</p>
   </div>
 
   <!-- Kuku introduces herself (once) -->
@@ -166,6 +167,7 @@
         <p>Ali calls you "Brother" in every argument, so this is basically your life. Eat your chocolate before he gets it.</p>
         <div class="choc" id="choc" aria-label="Chocolate bar"></div>
         <p class="bro-line" id="broLine" aria-live="polite"></p>
+        <button class="btn btn-ghost choc-refill" id="chocRefill" type="button" hidden>Unwrap another bar</button>
         <button class="gojo-peek" id="gojoPeek" type="button" aria-label="Something blindfolded is hiding here"><img data-cat="gojo" alt="" /></button>
       </article>
 
@@ -224,6 +226,7 @@
       </div>
       <p class="cake-msg" id="cakeMsg" aria-live="polite"></p>
       <div class="after" id="cakeAfter" hidden>
+        <button class="btn btn-ghost" id="relight" type="button">Light them again</button>
         <button class="btn btn-main" data-next="6" type="button">Keep going</button>
       </div>
     </section>
@@ -298,7 +301,7 @@
         <p class="lede">Good. (See: translation guide, line six.)</p>
         <p class="egg-report" id="eggReport"></p>
         <ul class="egg-list" id="eggList"></ul>
-        <button class="btn btn-main" id="shareScore" type="button">Send Ali my score</button>
+        <button class="btn btn-main" id="shareScore" type="button">Make my Kuku Wrapped card</button>
         <button class="btn btn-ghost" id="replay" type="button">Start over</button>
       </div>
     </section>
@@ -338,6 +341,20 @@
         <button class="book-turn" id="bookNext" type="button" aria-label="Next page">›</button>
       </div>
       <div class="book-detail" id="bookDetail" hidden></div>
+    </div>
+  </div>
+
+  <!-- share card -->
+  <div class="share-modal" id="shareModal" hidden role="dialog" aria-label="Your Kuku Wrapped card">
+    <div class="share-inner">
+      <img class="share-img" id="shareImg" alt="Your Kuku Wrapped card" />
+      <p class="share-status" id="shareStatus" aria-live="polite"></p>
+      <button class="btn btn-main" id="shareSend" type="button">Send it to Ali</button>
+      <div class="share-row">
+        <button class="btn btn-ghost" id="shareSave" type="button">Save image</button>
+        <button class="btn btn-ghost" id="shareText" type="button">Send as text</button>
+      </div>
+      <button class="share-close" id="shareClose" type="button">Close</button>
     </div>
   </div>
 

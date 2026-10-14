@@ -615,3 +615,19 @@ button { -webkit-user-select: none; user-select: none; }
 .sb-last .sb-photo { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
 .sb-photo-kuku { position: absolute; right: -28px; top: -24px; width: 92px !important; transform: rotate(12deg); filter: drop-shadow(0 4px 8px #0004); }
 .sb-polaroid figcaption { margin-top: 10px; font-family: var(--hand); font-size: 18px; font-weight: 700; color: #22263d; line-height: 1.1; }
+
+.choc-refill { display: block; margin: 12px auto 0; }
+.loader-sound { position: absolute; bottom: calc(env(safe-area-inset-bottom) + 28px); left: 0; right: 0; margin: 0; font-size: 15px; color: var(--chalk-dim); }
+.wr-bars i.seen { cursor: pointer; }
+.wr-bars { padding: 6px 0; }
+.wr-hint { font-size: 14px; color: var(--chalk-dim); }
+
+/* ---------- v8: share card ---------- */
+.share-modal { position: fixed; inset: 0; z-index: 85; display: flex; align-items: center; justify-content: center;
+  padding: calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 12px); background: #070b1df0; }
+.share-inner { width: min(100%, 420px); max-height: 100%; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+.share-img { width: 100%; aspect-ratio: 1080 / 1350; border-radius: 18px; box-shadow: 0 20px 50px #000c; background: #182048; object-fit: contain; }
+.share-status { margin: 0; min-height: 20px; text-align: center; font-size: 14px; color: var(--chalk-dim); }
+.share-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.share-row .btn { font-size: 20px; padding: 12px 8px; }
+.share-close { background: none; border: 0; color: var(--chalk-dim); font-size: 16px; padding: 10px; text-decoration: underline; }

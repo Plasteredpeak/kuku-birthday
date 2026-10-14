@@ -25,14 +25,6 @@ export const STICKERS = [
 
 // lines are matched exactly against what Kuku says
 export const QUOTES = [
-  { id: 'q-hi', text: "hi. i'm Kuku.", hint: 'The very first thing.' },
-  { id: 'q-me', text: 'Kuku is ME. the angry cat. not you.', hint: 'Introductions.' },
-  { id: 'q-hasty', text: "don't get hasty. wait.", hint: 'Poke her before 12.' },
-  { id: 'q-hour', text: "you've been asking him for an hour. he told me.", hint: 'Keep poking her before 12.' },
-  { id: 'q-sleep', text: "ok. i'm going to sleep. wake me at 12. (don't.)", hint: 'Poke her until she gives up.' },
-  { id: 'q-wake', text: "it's not time yet. don't wake me up.", hint: 'Wake her up. Early.' },
-  { id: 'q-press', text: 'PRESS IT.', match: (t) => t.includes('PRESS IT.'), hint: 'Be there at 00:00.' },
-  { id: 'q-noob', text: "happy birthday noob. it's 12. YOUR 12.", hint: 'Open the surprise.' },
   { id: 'q-gst', text: 'I DONT HAVE GST CLOCK', hint: 'A clock that does not exist.' },
   { id: 'q-late', text: "that's 4 hours late. as usual 😭 try again.", hint: 'The wrong 12.' },
   { id: 'q-cape', text: "it's just ali in a cape. ignore him.", hint: 'Find Batman.' },
@@ -81,7 +73,9 @@ export function createBook({ CAT, state, save, sfx, gsap, reduced, eggs, onCompl
   const book = $('#book'), pageEl = $('#bookPage'), btn = $('#bookBtn'), chip = $('#bookChip')
   let page = 0, open = false, chipTimer
 
-  const count = () => state.stickers.length + state.quotes.length
+  // only count ids that still exist (old saves may hold retired lines)
+  const count = () => state.stickers.filter((id) => STICKERS.some((s) => s.id === id)).length
+    + state.quotes.filter((id) => QUOTES.some((q) => q.id === id)).length
   const complete = () => count() >= TOTAL
 
   function badge() {
