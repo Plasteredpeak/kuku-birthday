@@ -352,7 +352,7 @@ body.is-waiting .hud { background: none; }
 .loader-bar { position: absolute; top: calc(42% + 192px); left: 50%; width: 200px; margin-left: -100px; height: 8px; border-radius: 99px; background: var(--stone); overflow: hidden; }
 .loader-bar span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--ribbon), var(--lantern)); border-radius: inherit; transition: width .2s; }
 .loader-pct { position: absolute; top: calc(42% + 206px); left: 0; right: 0; margin: 0; font-family: var(--hand); color: var(--chalk-dim); font-size: 18px; }
-.loader-go { position: absolute; top: calc(42% + 186px); left: 50%; transform: translateX(-50%); min-width: 200px; animation: pulse 1.6s ease-in-out infinite; }
+.loader-go { position: absolute; top: calc(42% + 186px); left: 50%; z-index: 5; white-space: nowrap; min-width: 200px; animation: pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 50% { box-shadow: 4px 4px 0 var(--ribbon), 0 0 0 10px #ff8fb633; } }
 
 /* ---------- countdown stage ---------- */

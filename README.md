@@ -25,7 +25,7 @@ Progress is saved in the browser (localStorage), so if she closes the tab she'll
 
 ## How it opens
 
-1. **Loader.** Kuku in the middle with every other sticker orbiting her as the site loads. Loading lines cycle underneath ("calibrating sarcasm", "removing Ali's excuses", "buying a Cinnabon"…). When it reaches 100%, the stickers collapse into Kuku and **Tap to open** appears. That tap is also what lets the music start, since phones block sound until a tap.
+1. **Loader.** Kuku in the middle with every other sticker orbiting her as the site loads. Loading lines cycle underneath ("calibrating sarcasm", "removing Ali's excuses", "buying a Cinnabon"…). When it reaches 100%, the stickers collapse into Kuku and **Tap to open** appears. **The button runs away from her first 4 taps**, jumping to a random spot each time ("nope." → "too slow." → "almost. no." → "ok ok. last one. probably."), then turns into **Fine. Open it** and works on the 5th tap. That tap is also what lets the music start, since phones block sound until a tap.
 2. **Countdown.** A full-screen timer (hours, minutes, seconds) over animated backgrounds that change every 25 seconds, each with its own music track:
    - the cave: glowing fireflies drifting up under stalactites (cave music)
    - the night sky: twinkling stars and shooting stars (soft piano)

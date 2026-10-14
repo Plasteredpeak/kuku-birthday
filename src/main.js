@@ -1117,7 +1117,35 @@ showUpTo(state.level)
 if (params.has('all')) { state.level = 7; state.revealed = true; showUpTo(7) }
 if (state.finale) { $('#finale').hidden = false; $('#getLost').parentElement.hidden = true; renderFinale() }
 runLoader()
-$('#loaderGo').addEventListener('click', () => {
+// the open button runs away a few times before it lets her in
+const DODGE_LINES = ['nope.', 'too slow.', 'almost. no.', 'ok ok. last one. probably.']
+let dodges = 0, justDodged = 0
+const goBtn = $('#loaderGo')
+gsap.set(goBtn, { xPercent: -50 })
+goBtn.addEventListener('pointerdown', (e) => {
+  if (reduced || dodges >= DODGE_LINES.length) return
+  e.preventDefault()
+  justDodged = Date.now()
+  const r = goBtn.getBoundingClientRect()
+  const maxX = innerWidth / 2 - r.width / 2 - 16
+  const homeTop = r.top - (gsap.getProperty(goBtn, 'y') || 0)
+  let x, y
+  do {
+    x = (Math.random() * 2 - 1) * maxX
+    y = 90 + Math.random() * (innerHeight - 200) - homeTop
+    // new spot must be well away from her finger
+    var cx = innerWidth / 2 + x, cy = homeTop + y + r.height / 2
+  } while (Math.hypot(cx - e.clientX, cy - e.clientY) < 170)
+  gsap.to(goBtn, { x, y, rotate: (Math.random() - 0.5) * 24, duration: 0.28, ease: 'back.out(2)' })
+  $('#loaderLine').textContent = DODGE_LINES[dodges]
+  if (!reduced) gsap.fromTo('.loader-kuku', { rotate: -12 }, { rotate: 0, duration: 0.5, ease: 'elastic.out(1,0.3)' })
+  buzz(25)
+  dodges++
+  if (dodges === DODGE_LINES.length) goBtn.textContent = 'Fine. Open it'
+})
+goBtn.addEventListener('click', () => {
+  if (Date.now() - justDodged < 500) return
+  if (!reduced && dodges < DODGE_LINES.length) return
   initAudio()
   sfx.meow()
   const go = () => {
