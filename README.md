@@ -113,7 +113,7 @@ A **📖 book button** in the top bar (after the reveal) opens Samiya's sticker 
   2. **Guest stars**: Batman (Ali), Gojo, Samiya angry, Sign cat "ur short", Sign cat "UR GAY.".
   3. **Things Kuku said**: 32 lines. Unheard ones show as blacked-out word bars with a hint underneath.
   4. **Easter eggs**: all 17, found ones ticked, missing ones as ??? with hints.
-  5. **Last page**: padlocked ("This page is stuck shut") until all 53 are collected. Then it shows the heart cat and a note from Ali ending in "Noob. (See the translation guide, line one.)"
+  5. **Last page**: padlocked ("This page is stuck shut") until all 53 are collected. Then it shows a note from Ali and **the only photo of Samiya and Ali together** as a taped polaroid with heart Kuku on the corner ("you: in focus. me: a thumbs up and a lens flare."), ending in "Noob. (See the translation guide, line one.)". The photo (`src/assets/us.jpg`) is resized and has its metadata (including location) stripped. It is the only photo on the site, and like everything in the public repo, the file itself is publicly reachable.
 - **Collected stickers** are taped in at a slight tilt. Tap one to see it big with a caption ("YAYYY Kuku: Pure joy. Rare. Like Ali being on time.").
 - **Uncollected stickers** are dark silhouettes with "???". Tapping one shakes it and shows a hint.
 - **Completing the book:** heart Kuku, confetti and "the sticker book is FULL. go look at the last page. noob."
@@ -214,4 +214,4 @@ art-originals/*.jpg     the original cat images
 
 Every push to `main` builds and deploys to GitHub Pages automatically through `.github/workflows/deploy.yml` (Settings → Pages → Source must be **GitHub Actions**). Only keep that one workflow, because GitHub's "static content" template publishes unbuilt files and breaks the site.
 
-Built with Vite, GSAP and canvas-confetti. No photos are used.
+Built with Vite, GSAP and canvas-confetti. The only photo is the one on the sticker book's last page.

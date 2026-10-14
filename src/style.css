@@ -604,3 +604,14 @@ button { -webkit-user-select: none; user-select: none; }
 .wr-summary b { color: var(--chalk); font-family: var(--hand); font-size: 22px; }
 .wr-actions { display: grid; gap: 10px; margin-top: auto; }
 .sob-drop { position: absolute; top: -60px; line-height: 1; }
+.sb-polaroid {
+  position: relative; margin: 18px auto 22px; width: min(84%, 300px); padding: 10px 10px 14px;
+  background: #fff; box-shadow: 0 10px 24px #0003; transform: rotate(-3deg);
+}
+.sb-polaroid::before { /* tape */
+  content: ''; position: absolute; top: -10px; left: 50%; width: 90px; height: 22px; margin-left: -45px;
+  background: #ffcf6b99; transform: rotate(4deg);
+}
+.sb-last .sb-photo { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+.sb-photo-kuku { position: absolute; right: -28px; top: -24px; width: 92px !important; transform: rotate(12deg); filter: drop-shadow(0 4px 8px #0004); }
+.sb-polaroid figcaption { margin-top: 10px; font-family: var(--hand); font-size: 18px; font-weight: 700; color: #22263d; line-height: 1.1; }

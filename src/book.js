@@ -1,3 +1,4 @@
+import US_PHOTO from './assets/us.jpg'
 // The sticker book: every sticker she sees and every Kuku line she hears gets collected here.
 
 export const STICKERS = [
@@ -146,9 +147,15 @@ export function createBook({ CAT, state, save, sfx, gsap, reduced, eggs, onCompl
         <p>This page is stuck shut.</p><p class="sb-small">Collect every sticker and every line to open it. ${count()} of ${TOTAL} so far.</p></div>`
     }
     return `<div class="sb-last">
-      <img src="${CAT.heart}" alt="" />
       <p class="sb-last-big">You collected everything.</p>
       <p>Every sticker, every line, every grumpy thing Kuku said. That's a lot of tapping on a cat for one birthday.</p>
+      <p>So here's the rarest thing on this whole website. The only picture of us. It's not even a good picture.</p>
+      <figure class="sb-polaroid">
+        <img class="sb-photo" src="${US_PHOTO}" alt="Samiya and Ali, the only picture of them together" />
+        <img class="sb-photo-kuku" src="${CAT.heart}" alt="" />
+        <figcaption>you: in focus. me: a thumbs up and a lens flare.</figcaption>
+      </figure>
+      <p>You're in focus. I'm a blurry thumbs up with a lightsaber through my face. Honestly, accurate. We'll take a better one someday.</p>
       <p>Noob. (See the translation guide, line one.)</p>
       <p class="sb-sign">– Ali</p>
     </div>`
