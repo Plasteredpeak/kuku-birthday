@@ -531,3 +531,9 @@ body.is-waiting .book-btn, body.is-loading .book-btn, body.is-intro .book-btn { 
 .book-detail p { margin: 6px 0 0; max-width: 28ch; }
 .sb-d-name { font-family: var(--hand); font-size: 32px; font-weight: 700; }
 body.is-waiting .book-chip, body.is-intro .book-chip, body.is-loading .book-chip { display: none; }
+
+/* ---------- v6: phone hardening ---------- */
+html, body { touch-action: manipulation; }
+img { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
+button { -webkit-user-select: none; user-select: none; }
+#shareScore { margin-bottom: 10px; width: 100%; }

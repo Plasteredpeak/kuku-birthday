@@ -148,6 +148,34 @@ Pop-up stickers: `batman`, `gojo`, `samiya-angry`. Rude peekers: `sign-short`, `
 
 ---
 
+## Before sending (checklist)
+
+1. On GitHub, **Actions** → the latest "Deploy to GitHub Pages" run is green.
+2. On your own phone, open `https://plasteredpeak.github.io/kuku-birthday/?ali&wait&reset`, turn the volume up and play through quickly. (Your progress is stored on your phone only and never affects hers.)
+3. Send her the **plain link**: `https://plasteredpeak.github.io/kuku-birthday/`. Never send a link with `?ali`, `?wait`, `?all` or `?reset` in it.
+4. WhatsApp shows a preview card (Kuku + "Samiya's 22nd"). If it doesn't appear straight away, wait a few seconds before sending.
+
+Sending it 1 to 2 hours early is fine. She gets the loader, Kuku's intro and the live countdown, and nothing else unlocks until 12 PKT. The screen stays awake while the countdown is open.
+
+## Tested scenarios
+
+Automated tests in a phone-sized Chromium (384×832, plus 360×740 and 412×915), with the clock faked to specific moments:
+- Link opened 2 hours early: intro ends with the "guarding your surprise" line, countdown shows ~2:00:00, only timer + Kuku + sound visible.
+- Reload mid-countdown: no second intro, straight to the timer.
+- Countdown reaching zero on its own: reveal button appears, Kuku switches to yay and stays there until pressed.
+- First opened after 12: intro says "it's already 12", reveal button straight away.
+- Coming back after the reveal: straight into the site where she left off.
+- 1:35pm PKT next day: birth-time egg triggers.
+- Reduced-motion setting, browser blocking saved progress, double-tapping every big button.
+- Every Kuku mood in every level, all stickers load, sticker book collection and completion, no sideways scrolling on any screen size.
+
+Not testable here, so check on a real phone: sound, vibration, the mic for the candles and shaking for the cat rain.
+
+## Extras
+- **WhatsApp preview:** `public/og.jpg` with Open Graph tags.
+- **Send Ali my score:** button at the very end that opens WhatsApp with "Kuku report: I found X/17 easter eggs and Y/48 things for my sticker book…".
+- **Phone hardening:** no long-press "save image" menus, no double-tap zoom, Samsung's forced dark mode blocked, screen wake lock during the countdown, double-tap guards on the open, ok Kuku and reveal buttons.
+
 ## Project structure
 
 ```

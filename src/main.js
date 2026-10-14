@@ -8,7 +8,7 @@ import confetti from 'canvas-confetti'
 import kukuCalm from './assets/kuku-calm.png'
 import { initAudio, playTheme, sfx, isMuted, setMuted } from './audio.js'
 import { createBackground } from './bg.js'
-import { createBook } from './book.js'
+import { createBook, TOTAL as BOOK_TOTAL } from './book.js'
 
 const CAT = Object.fromEntries(
   Object.entries(import.meta.glob('./assets/cats/*.webp', { eager: true, import: 'default' }))
@@ -1058,6 +1058,7 @@ function openStage() {
   document.body.classList.remove('is-loading')
   document.body.classList.add('is-waiting')
   $('#stage').hidden = false
+  keepAwake(true)
   bg = createBackground([$('#bgA'), $('#bgB')], ['angry', 'heart', 'yay', 'flower', 'music', 'eyes', 'calm', 'sleep'].map((n) => CAT[n]), {
     onScene: (s) => { $('#sceneName').textContent = s.label; playTheme(s.theme) },
   })
@@ -1099,10 +1100,13 @@ function showRevealButton() {
   say(wasAsleep ? "I'M AWAKE. it's 12. press it. PRESS IT." : 'it is time. press it. PRESS IT.', 6000)
 }
 $('#revealBtn').addEventListener('click', () => {
+  if ($('#revealBtn').dataset.done) return
+  $('#revealBtn').dataset.done = '1'
   clearInterval(stageTimer); clearInterval(teaseTimer)
   sfx.domain()
   buzz([40, 30, 200])
   const finish = () => {
+    keepAwake(false)
     bg?.stop()
     $('#stage').hidden = true
     state.revealed = true; save()
@@ -1160,6 +1164,8 @@ function runIntro() {
       if (i < LINES.length - 1) show(i + 1)
     })
     $('#introDone').addEventListener('click', () => {
+      if (intro.dataset.closing) return
+      intro.dataset.closing = '1'
       clearInterval(typing)
       state.introduced = true; save()
       const done = () => { intro.remove(); resolve() }
@@ -1186,6 +1192,28 @@ function enterSite(firstTime = false) {
   }
   schedulePeek(9000, 16000)
 }
+
+/* ---------------- phone hardening ---------------- */
+// no "save image" menu on long-press
+document.addEventListener('contextmenu', (e) => { if (e.target.closest('img, .kuku, .peeker, .sb-slot')) e.preventDefault() })
+// keep the screen awake while she waits for the countdown
+let wakeLock = null
+async function keepAwake(on) {
+  try {
+    if (on && 'wakeLock' in navigator && document.visibilityState === 'visible') wakeLock = await navigator.wakeLock.request('screen')
+    else if (!on && wakeLock) { await wakeLock.release(); wakeLock = null }
+  } catch {}
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && document.body.classList.contains('is-waiting')) keepAwake(true)
+})
+
+// share her score with Ali on WhatsApp
+$('#shareScore').addEventListener('click', () => {
+  const s = book?.count() ?? 0
+  const text = `Kuku report: I found ${state.eggs.length}/${TOTAL_EGGS} easter eggs and ${s}/${BOOK_TOTAL} things for my sticker book. ${state.pets >= 15 ? 'Kuku likes me now.' : 'Kuku still hates me.'} 😾`
+  location.href = `https://wa.me/?text=${encodeURIComponent(text)}`
+})
 
 /* ---------------- boot ---------------- */
 showUpTo(state.level)
@@ -1222,6 +1250,8 @@ goBtn.addEventListener('pointerdown', (e) => {
 goBtn.addEventListener('click', () => {
   if (ignoreClick) { ignoreClick = false; return }
   if (!reduced && dodges < DODGE_LINES.length) return
+  if (goBtn.dataset.opening) return // ignore double taps
+  goBtn.dataset.opening = '1'
   initAudio()
   sfx.meow()
   const go = async () => {
