@@ -21,6 +21,15 @@
     <button class="btn btn-main loader-go" id="loaderGo" type="button" hidden>Tap to open</button>
   </div>
 
+  <!-- Kuku introduces herself (once) -->
+  <div class="intro" id="intro" hidden role="dialog" aria-label="Kuku introduces herself">
+    <img class="intro-cat" id="introCat" alt="Kuku" />
+    <div class="intro-card" aria-live="polite"><span class="intro-name">Kuku</span><span id="introText"></span></div>
+    <div class="intro-dots" id="introDots" aria-hidden="true"></div>
+    <p class="intro-hint" id="introHint">tap anywhere</p>
+    <button class="btn btn-main" id="introDone" type="button" hidden>ok Kuku</button>
+  </div>
+
   <!-- countdown stage -->
   <div class="stage" id="stage" hidden>
     <canvas class="stage-bg" id="bgA" aria-hidden="true"></canvas>
@@ -45,7 +54,7 @@
     <button class="hud-title" id="hudTitle" type="button">samiya's 22nd</button>
     <div class="hud-right">
       <button class="sound-btn" id="soundBtn" type="button" aria-label="Turn sound off"><img id="soundIcon" alt="" /></button>
-      <span class="hud-eggs" id="hudEggs" aria-live="polite"><span class="egg-icon" aria-hidden="true"></span><b id="eggCount">0</b>/15</span>
+      <span class="hud-eggs" id="hudEggs" aria-live="polite"><span class="egg-icon" aria-hidden="true"></span><b id="eggCount">0</b>/17</span>
     </div>
   </header>
 
@@ -85,6 +94,7 @@
       <p class="wordle-msg" id="wordleMsg" aria-live="polite"></p>
       <div class="keyboard" id="keyboard"></div>
       <div class="after" id="wordleAfter" hidden>
+        <button class="btn btn-ghost retry-btn" id="retryWordle" type="button" hidden>Reset and try again (shameful)</button>
         <button class="btn btn-ghost" id="copyGrid" type="button">Copy my result</button>
         <button class="btn btn-main" data-next="2" type="button">Keep going</button>
       </div>
@@ -120,9 +130,16 @@
 
       <article class="panel" id="pButler">
         <h3>Black Butler</h3>
-        <p>Your birthday dessert has been prepared.</p>
+        <p>Your birthday mithai has been prepared.</p>
         <div class="cloche-stage">
-          <div class="dessert" id="dessert" aria-hidden="true">🍰</div>
+          <svg class="dessert mithai" id="dessert" viewBox="0 0 160 110" aria-hidden="true">
+            <ellipse cx="80" cy="74" rx="70" ry="26" fill="#d9dcec"/>
+            <path d="M10 70 Q80 128 150 70 Z" fill="#c4c9e0"/>
+            <ellipse cx="80" cy="70" rx="62" ry="20" fill="#c97a2b" opacity=".85"/>
+            <ellipse cx="80" cy="66" rx="58" ry="14" fill="#e3a14a" opacity=".55"/>
+            <circle cx="54" cy="60" r="19" fill="#5a2410"/><circle cx="104" cy="60" r="19" fill="#5a2410"/><circle cx="79" cy="50" r="20" fill="#6b2c14"/>
+            <ellipse cx="48" cy="53" rx="6" ry="4" fill="#fff" opacity=".35"/><ellipse cx="98" cy="53" rx="6" ry="4" fill="#fff" opacity=".35"/><ellipse cx="73" cy="42" rx="7" ry="4" fill="#fff" opacity=".4"/>
+          </svg>
           <svg class="cloche" id="cloche" viewBox="0 0 200 120" aria-hidden="true">
             <path d="M20 100 Q20 20 100 18 Q180 20 180 100 Z" fill="#c9cfe6" stroke="#eef1ff" stroke-width="3"/>
             <path d="M40 92 Q44 40 100 32" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/>

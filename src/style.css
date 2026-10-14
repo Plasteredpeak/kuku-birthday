@@ -408,5 +408,30 @@ body.is-waiting .hud { background: none; }
 .peeker img { width: 100%; display: block; }
 .peeker.from-left { left: 0; }
 .peeker.from-right { right: 0; }
-.peeker.from-right img { transform: scaleX(-1); }
-.peeker.from-right.no-flip img { transform: none; }
+
+/* ---------- v4: Kuku intro screen ---------- */
+.intro {
+  position: fixed; inset: 0; z-index: 88; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px var(--gutter) calc(env(safe-area-inset-bottom) + 30px); text-align: center;
+  background: radial-gradient(90% 60% at 50% 38%, #2a3a7a 0%, var(--ink) 72%);
+  -webkit-user-select: none; user-select: none; cursor: pointer;
+}
+.intro-cat { width: min(62vw, 250px); height: 230px; object-fit: contain; filter: drop-shadow(0 12px 26px #000b); }
+.intro-card {
+  position: relative; margin-top: 26px; width: min(100%, 360px); min-height: 118px; padding: 18px 20px;
+  background: var(--chalk); color: var(--ink); border-radius: 20px; box-shadow: 5px 5px 0 var(--ribbon);
+  font-family: var(--hand); font-size: 27px; font-weight: 700; line-height: 1.15; text-align: left;
+}
+.intro-card::before { content: ''; position: absolute; top: -14px; left: 50%; margin-left: -14px; border: 14px solid transparent; border-top: 0; border-bottom-color: var(--chalk); }
+.intro-name { display: block; font-size: 15px; color: #6a6f8e; font-family: var(--body); font-weight: 700; margin-bottom: 4px; }
+.intro-dots { display: flex; gap: 6px; margin-top: 18px; }
+.intro-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--stone); }
+.intro-dots i.on { background: var(--lantern); }
+.intro-hint { margin: 14px 0 0; color: var(--chalk-dim); font-size: 14px; }
+.intro .btn { margin-top: 18px; min-width: 220px; }
+
+/* ---------- wordle retry, mithai ---------- */
+.retry-btn { flex-basis: 100% !important; }
+.mithai { width: 150px; margin-bottom: 8px; filter: drop-shadow(0 8px 14px #0008); }
+body.is-intro { overflow: hidden; }
+body.is-intro .hud, body.is-intro main, body.is-intro .kuku-dock { visibility: hidden; }

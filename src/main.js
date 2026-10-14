@@ -27,7 +27,7 @@ const params = new URLSearchParams(location.search)
 const ALI_MODE = params.has('ali')
 // ?ali&wait = fake 20-second countdown, to test the reveal
 const TARGET = params.has('wait') ? Date.now() + 20000 : ALI_MODE ? 0 : BIRTHDAY
-const TOTAL_EGGS = 15
+const TOTAL_EGGS = 17
 
 $$('.kuku-src').forEach((img) => (img.src = CAT.angry))
 $('#favicon').href = CAT.angry
@@ -36,7 +36,7 @@ $$('img[data-cat]').forEach((img) => (img.src = CAT[img.dataset.cat]))
 
 /* ---------------- state ---------------- */
 const KEY = 'kuku-bday-v1'
-let state = { level: 0, eggs: [], pets: 0, guesses: [], candlesOut: false, finale: false, revealed: false, gym: null, introduced: false }
+let state = { level: 0, eggs: [], pets: 0, guesses: [], candlesOut: false, finale: false, revealed: false, gym: null, introduced: false, wordleFails: 0 }
 try {
   if (params.has('reset')) localStorage.removeItem(KEY)
   const saved = JSON.parse(localStorage.getItem(KEY) || 'null')
@@ -85,9 +85,10 @@ function say(text, ms = 4500) {
 }
 
 const baseMood = () => (state.finale ? 'heart' : state.pets >= 15 ? 'calm' : 'angry')
-let moodTimer, sleeping = false
+let moodTimer, sleeping = false, reactionUntil = 0
 function mood(name, ms = 2400) {
   clearTimeout(moodTimer)
+  reactionUntil = ms ? Date.now() + Math.max(ms * 2, 4500) : 0
   sleeping = name === 'sleep' && !ms
   if (kukuImg.dataset.mood !== name) {
     kukuImg.dataset.mood = name
@@ -168,11 +169,14 @@ const SLEEPY_LINES = [
   "it's not time yet. don't wake me up.", 'zzz… still not 12…', 'five more minutes…', "DON'T wake me up.",
   'wake me at 12. YOUR 12.', 'zzz… cinnabon… zzz', 'shhh. sleeping. guarding. both.',
 ]
-let waitTaps = 0, sleepTaps = 0, introUntil = 0
+let waitTaps = 0, sleepTaps = 0
 function waitingTap() {
   buzz(15)
-  if (Date.now() < introUntil) { sfx.hiss(); say('shh. let me finish introducing myself.', 3500); return }
-  stopQueue()
+  if (revealShown) {
+    sfx.meow(true)
+    say(pick(['press the button!', 'the BUTTON. not me. PRESS IT.', "why are you tapping me. it's 12. GO.", 'button. now. please.']))
+    return
+  }
   if (sleeping) {
     sfx.hiss()
     say(SLEEPY_LINES[sleepTaps++ % SLEEPY_LINES.length])
@@ -194,28 +198,6 @@ function fallAsleep(line) {
   if (line) say(line, 6000)
 }
 
-// Kuku explains who Kuku is, one bubble at a time
-let queueToken = 0
-function sayQueue(lines, gap = 4300) {
-  const token = ++queueToken
-  lines.forEach((l, i) => setTimeout(() => { if (token === queueToken) say(l, gap + 400) }, i * gap))
-  return lines.length * gap
-}
-function stopQueue() { queueToken++ }
-function introduceKuku(after) {
-  state.introduced = true; save()
-  mood('eyes', 0)
-  const ms = sayQueue([
-    "hi. i'm Kuku.",
-    'Kuku is ME. the angry cat down here. not you.',
-    "you're Samiya. the birthday one. i'm the mascot.",
-    'being angry is my whole personality.',
-    ...after,
-  ])
-  introUntil = Date.now() + ms
-  setTimeout(() => { if (!sleeping && kukuImg.dataset.mood === 'eyes') mood(baseMood(), 0) }, ms)
-}
-
 /* ---------------- eggs ---------------- */
 const EGGS = {
   gst: 'Tapped the GST clock',
@@ -233,6 +215,8 @@ const EGGS = {
   gojo: 'Found Gojo',
   idle: 'Let Kuku fall asleep',
   bro: 'Let your brother steal three pieces',
+  resist: 'Resisted the Cinnabon',
+  candles: 'Blew out all 22 candles by hand',
 }
 const HINTS = {
   gst: 'A clock that does not exist.',
@@ -250,6 +234,8 @@ const HINTS = {
   gojo: 'Something blindfolded is hiding in the anime corner.',
   idle: 'Do nothing for a while.',
   bro: 'Let the brother win.',
+  resist: 'Say no to cinnamon.',
+  candles: 'Skip the mic. Do the candles yourself.',
 }
 const toast = $('#toast')
 let toastTimer
@@ -352,7 +338,12 @@ function unlock(n) {
     6: ['history lesson.', 'flower'],
     7: ['he wrote this himself. i checked.', 'eyes'],
   }
-  if (intros[n]) setTimeout(() => { say(intros[n][0]); mood(intros[n][1], n === 4 ? 0 : 2600) }, 700)
+  if (intros[n]) {
+    // don't stomp on a reaction that's still showing; wait for it to finish
+    const wait = Math.max(700, reactionUntil - Date.now() + 200)
+    setTimeout(() => say(intros[n][0]), 700)
+    setTimeout(() => mood(intros[n][1], n === 4 ? 0 : 2600), n === 4 ? 700 : wait)
+  }
   if (n !== 4 && kukuImg.dataset.mood === 'buff') mood(baseMood(), 0)
 }
 $$('[data-next]').forEach((b) => b.addEventListener('click', () => unlock(+b.dataset.next)))
@@ -512,7 +503,7 @@ function afterGuess(g) {
   if (g === 'HAMZA') { mood('eyes', 2500); egg('hamza', 'HAMZA in the Wordle', 'why is HE in your head. on your birthday.') }
   else if (reactions[g]) say(reactions[g])
   if (g === ANSWER) return finishWordle(true, true)
-  if (state.guesses.length >= 6) return finishWordle(false, true)
+  if (state.guesses.length >= 6) { state.wordleFails++; save(); return finishWordle(false, true) }
   const lines = ['hmm', 'no', 'close-ish', 'try again', 'noob']
   msg.textContent = state.guesses.length >= 3 ? 'hint: what does Ali call you?' : pick(lines)
 }
@@ -527,11 +518,34 @@ function finishWordle(won, live = false) {
       mood('yay', 3000); sfx.win(); burst(0.5, 0.5)
     }
   } else {
-    msg.textContent = "It was DUMBO. It's always DUMBO."
-    if (live) { say('X/6. translation: he still thinks you are smart.'); mood('cry', 3000); sfx.lose() }
+    const f = state.wordleFails
+    const SHAME = [
+      ['X/6. Six guesses. Five letters. Zero brain cells.', 'kuku is embarrassed to be seen with you.', '6 guesses.<br>0 brain cells.'],
+      ['X/6 again. Twice. TWICE. Hint: what does Ali call you?', 'i am telling ali. he will never let this go.', 'TWICE.'],
+      ['X/6. It starts with D. It ends with O. It is you.', 'this is a cry for help. D _ _ _ O.', 'kuku has lost all hope'],
+    ]
+    const [line, kukuLine, pop] = SHAME[Math.min(f - 1, SHAME.length - 1)] || SHAME[0]
+    msg.textContent = line
+    $('#retryWordle').hidden = false
+    $('#wordleAfter [data-next]').textContent = 'Give up and keep going'
+    if (live) { say(kukuLine, 6000); mood('cry', 4000); sfx.lose(); popCat('cry', pop, 2800); buzz([120, 60, 120]) }
   }
   $('#wordleAfter').hidden = false
 }
+function resetWordle() {
+  state.guesses = []; save()
+  cur = ''; done = false
+  $$('.tile', board).forEach((t) => { t.textContent = ''; t.className = 'tile'; t.style.animationDelay = '' })
+  $$('.key', kb).forEach((k) => k.classList.remove('hit', 'near', 'miss'))
+  $('#wordleAfter').hidden = true
+  $('#retryWordle').hidden = true
+  $('#wordleAfter [data-next]').textContent = 'Keep going'
+  msg.textContent = state.wordleFails > 1 ? 'Round ' + (state.wordleFails + 1) + '. Kuku is not watching. (she is.)' : "Round 2. Don't embarrass me again."
+  mood('eyes', 2000)
+  say(pick(['fine. one more chance.', 'again?? ok.', 'deep breaths. five letters.']))
+  board.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' })
+}
+$('#retryWordle').addEventListener('click', resetWordle)
 $('#copyGrid').addEventListener('click', async () => {
   const em = { hit: '🟩', near: '🟨', miss: '⬛' }
   const grid = state.guesses.map((g) => score(g).map((s) => em[s]).join('')).join('\n')
@@ -545,8 +559,8 @@ if (state.guesses.includes(ANSWER) || state.guesses.length >= 6) finishWordle(st
 
 /* ---------------- cave ---------------- */
 const MEMORIES = [
-  { when: 'Sep 2025', q: '"PLAY SILKSONG"', t: 'You, in all caps. So I played, and you watched. You still say I never do anything with you.' },
-  { when: 'Every month since', q: '"when will you play hollow knight"', t: 'And then last month: "i miss hollow knight". Same, honestly.' },
+  { when: 'Every other week', q: '"play hollow knight"', t: 'You said it so many times I lost count. So I played, and you watched. You still say I never do anything with you.' },
+  { when: 'Sep 2026', q: '"I come dc if u play silksong hehehhehe"', t: 'Bribery. It worked. Then the next day: "i miss hollow knight". Same, honestly.' },
   { when: 'Aug 2025', q: '"WE CAN WATCH SUZUME"', t: 'Also all caps. Then in April, me: "You couldn\'t even decide what to watch." Both true.' },
   { when: 'Jul 2026', q: '"I tried cheesecake for the first time aj"', t: 'Twenty-one years without cheesecake. I said "I love cheese cake" and I stand by it.' },
   { when: 'Sep 2026', q: '"khana khalo"', t: "Your answer to me being tired, sick, dramatic or all three. It works. Don't tell anyone." },
@@ -631,7 +645,7 @@ $('#liftCloche').addEventListener('click', () => {
   gsap.to('#cloche', { y: clocheUp ? -90 : 0, rotate: clocheUp ? -12 : 0, duration: reduced ? 0 : 0.6, ease: 'back.out(1.6)' })
   $('#liftCloche').textContent = clocheUp ? 'Cover it again' : 'Lift the cover'
   $('#butlerLine').textContent = clocheUp
-    ? 'Cheesecake, my lady. If I couldn\'t manage this much, what kind of butler would I be?'
+    ? 'Gulab jamun, my lady. Warm, in syrup. If I couldn\'t manage this much, what kind of butler would I be?'
     : 'Yes, my lady.'
   if (clocheUp) { sfx.shimmer(); burst(0.5, 0.55, 40); buzz(20); mood('yay', 2000) }
 })
@@ -683,8 +697,10 @@ for (let i = 0; i < 22; i++) {
   c.addEventListener('click', () => blowOne(c))
   candlesEl.append(c)
 }
-function blowOne(c) {
+let micBlew = false
+function blowOne(c, byMic = false) {
   if (c.classList.contains('out')) return
+  if (byMic) micBlew = true
   c.classList.add('out')
   sfx.blow()
   if (!$$('.candle:not(.out)').length) candlesDone()
@@ -694,6 +710,7 @@ function candlesDone() {
   if (state.candlesOut && !$('#cakeAfter').hidden) return
   state.candlesOut = true; save()
   stopMic()
+  if (!micBlew) setTimeout(() => egg('candles', 'Blew out all 22 candles by hand', 'by HAND. all 22. dedication.'), 1800)
   $('#cakeMsg').textContent = 'Happy 22nd, Samiya.'
   say('wish made. i hope it was not dumb.')
   mood('yay', 4000)
@@ -730,7 +747,7 @@ $('#blowBtn').addEventListener('click', async () => {
       loud++
       if (loud % 3 === 0) {
         const lit = $$('.candle:not(.out)')
-        lit.sort(() => Math.random() - 0.5).slice(0, 2).forEach(blowOne)
+        lit.sort(() => Math.random() - 0.5).slice(0, 2).forEach((c) => blowOne(c, true))
       }
     }
     if (micStream) micRaf = requestAnimationFrame(loop)
@@ -781,7 +798,7 @@ $('#getLost').addEventListener('click', () => {
 function renderFinale() {
   const n = state.eggs.length
   $('#eggReport').textContent = n === TOTAL_EGGS
-    ? `All ${TOTAL_EGGS} easter eggs, one for every day of October so far. Noob. (See translation guide.)`
+    ? `All ${TOTAL_EGGS} easter eggs. Noob. (See translation guide.)`
     : `You found ${n} of ${TOTAL_EGGS} easter eggs. The rest are still hiding.`
   $('#eggList').innerHTML = Object.keys(EGGS).map((id) => {
     const found = state.eggs.includes(id)
@@ -846,7 +863,7 @@ let idleTimer
 const resetIdle = () => {
   clearTimeout(idleTimer)
   idleTimer = setTimeout(() => {
-    if (!state.revealed) return fallAsleep('zzz… wake me at 12…')
+    if (!state.revealed) { if (!revealShown) fallAsleep('zzz… wake me at 12…'); return }
     mood('sleep', 0)
     egg('idle', 'Let Kuku fall asleep', 'zzz... khana khalo... zzz')
   }, 45000)
@@ -907,7 +924,7 @@ function bunChoice(ate) {
   } else {
     $('#bunResult').textContent = 'Character development. Kuku ate it instead.'
     mood('buff', 3000); sfx.win()
-    say('resisted. ali is shook.')
+    egg('resist', 'Resisted the Cinnabon', 'resisted. ali is shook.')
   }
   $('#gymAfter').hidden = false
 }
@@ -1042,15 +1059,7 @@ function openStage() {
     setTimeout(() => { tease.textContent = TEASES[ti]; tease.style.opacity = 1 }, 400)
   }, 6500)
   const ready = Date.now() >= TARGET
-  setTimeout(() => {
-    if (!state.introduced) {
-      introduceKuku(ready
-        ? ['my job was guarding your surprise until 12.', 'oh. it already is 12. go on then.']
-        : ['my job: guarding your surprise until 12. Pakistani 12.', "so we wait. together. don't touch me."])
-    } else {
-      say(ready ? 'oh. it is time.' : 'not yet, noob. wait with me.')
-    }
-  }, 700)
+  if (!ready) setTimeout(() => say('not yet, noob. wait with me.'), 700)
   const update = () => {
     const s = Math.max(0, Math.ceil((TARGET - Date.now()) / 1000))
     setDigit('#cdH', pad2(Math.floor(s / 3600)))
@@ -1063,7 +1072,6 @@ function openStage() {
 }
 function showRevealButton() {
   revealShown = true
-  stopQueue()
   $('#stageKicker').textContent = "It's 12. Your 12."
   $('#tease').textContent = 'Go on then.'
   $('#tease').style.opacity = 1
@@ -1094,6 +1102,58 @@ $('#revealBtn').addEventListener('click', () => {
     .to('#flash', { opacity: 0, duration: 0.9, ease: 'power2.out' })
 })
 
+/* ---------------- Kuku introduces herself (separate screen, once) ---------------- */
+function runIntro() {
+  return new Promise((resolve) => {
+    const ready = Date.now() >= TARGET || state.revealed
+    const LINES = [
+      ['angry', "hi. i'm Kuku."],
+      ['eyes', 'Kuku is ME. the angry cat. not you.'],
+      ['flower', "you're Samiya. the birthday one."],
+      ['angry', "i'm the mascot of this website. being angry is my whole personality."],
+      ['buff', "i'll be in the corner the whole time. tap me and i'll react. badly."],
+      ready ? ['yay', "and it's already 12. so. let's go."] : ['sleep', 'right now my job is guarding your surprise until 12. Pakistani 12. come wait with me.'],
+    ]
+    const intro = $('#intro'), cat = $('#introCat'), text = $('#introText'), dots = $('#introDots')
+    dots.innerHTML = LINES.map(() => '<i></i>').join('')
+    intro.hidden = false
+    let i = -1, typing
+    const show = (n) => {
+      i = n
+      const [moodName, line] = LINES[i]
+      cat.src = CAT[moodName]
+      if (!reduced) gsap.fromTo(cat, { scale: 0.7, rotate: -10 }, { scale: 1, rotate: 0, duration: 0.45, ease: 'back.out(2.2)' })
+      $$('i', dots).forEach((d, k) => d.classList.toggle('on', k <= i))
+      clearInterval(typing)
+      if (reduced) text.textContent = line
+      else {
+        let c = 0
+        text.textContent = ''
+        typing = setInterval(() => { text.textContent = line.slice(0, ++c); if (c >= line.length) clearInterval(typing) }, 24)
+      }
+      sfx.meow(moodName === 'yay' || moodName === 'flower')
+      buzz(10)
+      if (i === LINES.length - 1) {
+        $('#introHint').hidden = true
+        $('#introDone').hidden = false
+        $('#introDone').textContent = ready ? "ok Kuku. let's go" : 'ok Kuku. show me the timer'
+      }
+    }
+    intro.addEventListener('click', (e) => {
+      if (e.target.closest('#introDone')) return
+      if (i < LINES.length - 1) show(i + 1)
+    })
+    $('#introDone').addEventListener('click', () => {
+      clearInterval(typing)
+      state.introduced = true; save()
+      const done = () => { intro.remove(); resolve() }
+      if (reduced) return done()
+      gsap.to(intro, { opacity: 0, duration: 0.4, onComplete: done })
+    })
+    show(0)
+  })
+}
+
 /* ---------------- entering the site ---------------- */
 function enterSite(firstTime = false) {
   document.body.classList.remove('is-loading', 'is-waiting')
@@ -1106,8 +1166,7 @@ function enterSite(firstTime = false) {
     mood('yay', 4000)
     say("happy birthday noob. it's 12. YOUR 12.", 5000)
   } else {
-    if (!state.introduced) introduceKuku(['scroll. i will be here. judging.'])
-    else say(state.level > 0 ? 'oh. you came back.' : 'hi again. still angry. scroll.')
+    say(state.level > 0 ? 'oh. you came back.' : 'hi again. still angry. scroll.')
   }
   schedulePeek(9000, 16000)
 }
@@ -1119,13 +1178,14 @@ if (state.finale) { $('#finale').hidden = false; $('#getLost').parentElement.hid
 runLoader()
 // the open button runs away a few times before it lets her in
 const DODGE_LINES = ['nope.', 'too slow.', 'almost. no.', 'ok ok. last one. probably.']
-let dodges = 0, justDodged = 0
+let dodges = 0, ignoreClick = false
 const goBtn = $('#loaderGo')
 gsap.set(goBtn, { xPercent: -50 })
 goBtn.addEventListener('pointerdown', (e) => {
+  ignoreClick = false
   if (reduced || dodges >= DODGE_LINES.length) return
   e.preventDefault()
-  justDodged = Date.now()
+  ignoreClick = true // the tap that made it jump must not open it
   const r = goBtn.getBoundingClientRect()
   const maxX = innerWidth / 2 - r.width / 2 - 16
   const homeTop = r.top - (gsap.getProperty(goBtn, 'y') || 0)
@@ -1144,12 +1204,18 @@ goBtn.addEventListener('pointerdown', (e) => {
   if (dodges === DODGE_LINES.length) goBtn.textContent = 'Fine. Open it'
 })
 goBtn.addEventListener('click', () => {
-  if (Date.now() - justDodged < 500) return
+  if (ignoreClick) { ignoreClick = false; return }
   if (!reduced && dodges < DODGE_LINES.length) return
   initAudio()
   sfx.meow()
-  const go = () => {
+  const go = async () => {
     $('#loader').remove()
+    if (!state.introduced) {
+      document.body.classList.remove('is-loading')
+      document.body.classList.add('is-intro')
+      await runIntro()
+      document.body.classList.remove('is-intro')
+    }
     if (state.revealed) enterSite(false)
     else openStage()
   }

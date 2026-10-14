@@ -1,7 +1,7 @@
 # kuku-birthday
 
 A small, grumpy, phone-first website for **Samiya's 22nd birthday (15 October 2026)**, made by Ali.
-Kuku, an angry cat sticker, guides her through seven levels, comments on everything and changes mood as she goes. There are 15 hidden easter eggs to find.
+Kuku, an angry cat sticker, guides her through seven levels, comments on everything and changes mood as she goes. There are 17 hidden easter eggs to find.
 
 - **Live:** https://plasteredpeak.github.io/kuku-birthday/
 - **Opens at:** 00:00 on 15 Oct, Pakistan time (PKT, UTC+5). That's 20:00 on 14 Oct in Ireland (IST, UTC+1). Before then, the site shows only the countdown.
@@ -26,19 +26,26 @@ Progress is saved in the browser (localStorage), so if she closes the tab she'll
 ## How it opens
 
 1. **Loader.** Kuku in the middle with every other sticker orbiting her as the site loads. Loading lines cycle underneath ("calibrating sarcasm", "removing Ali's excuses", "buying a Cinnabon"…). When it reaches 100%, the stickers collapse into Kuku and **Tap to open** appears. **The button runs away from her first 4 taps**, jumping to a random spot each time ("nope." → "too slow." → "almost. no." → "ok ok. last one. probably."), then turns into **Fine. Open it** and works on the 5th tap. That tap is also what lets the music start, since phones block sound until a tap.
-2. **Countdown.** A full-screen timer (hours, minutes, seconds) over animated backgrounds that change every 25 seconds, each with its own music track:
+2. **Kuku's intro screen (first visit only).** A separate full-screen page before the timer: a big Kuku sticker that changes mood with each line, a speech card that types out, progress dots and "tap anywhere" to go on. It's kept apart from the corner Kuku so it doesn't get mixed up with her reactions.
+   - angry: "hi. i'm Kuku."
+   - eyes: "Kuku is ME. the angry cat. not you."
+   - flower: "you're Samiya. the birthday one."
+   - angry: "i'm the mascot of this website. being angry is my whole personality."
+   - buff: "i'll be in the corner the whole time. tap me and i'll react. badly."
+   - sleep: "right now my job is guarding your surprise until 12. Pakistani 12. come wait with me." (or yay: "and it's already 12. so. let's go." if it's past 12)
+
+   Then **ok Kuku. show me the timer**.
+3. **Countdown.** A full-screen timer (hours, minutes, seconds) over animated backgrounds that change every 25 seconds, each with its own music track:
    - the cave: glowing fireflies drifting up under stalactites (cave music)
    - the night sky: twinkling stars and shooting stars (soft piano)
    - petals: pink petals falling (anime music)
    - kuku clouds: faded stickers floating up (Wordle loop)
    - aurora: drifting green, blue and pink light (music-box waltz)
 
-   **Kuku introduces herself** the first time, one bubble at a time: "hi. i'm Kuku." → "Kuku is ME. the angry cat down here. not you." → "you're Samiya. the birthday one. i'm the mascot." → "being angry is my whole personality." → "my job: guarding your surprise until 12. Pakistani 12." → "so we wait. together. don't touch me." Tapping her mid-intro gets "shh. let me finish introducing myself." The intro keeps going.
-
-   **Tapping Kuku before 12** doesn't count towards the 15 pets. She goes through: "don't get hasty. wait." → "have some patience." → "it's not 12 yet." → "asking won't make it faster." → "you've been asking him for an hour. he told me." → "Pakistani 12. look at the clock." → "tap tap tap. no." → "patience. you've heard of it?" → "i'm getting sleepy from all this waiting…". Then she **falls asleep** ("wake me at 12. (don't.)"). Tapping her while asleep cycles: "it's not time yet. don't wake me up." / "zzz… still not 12…" / "five more minutes…" / "DON'T wake me up." / "zzz… cinnabon… zzz". She also falls asleep after 45 seconds of no taps. Long-pressing her before 12 gets "no picking me up until 12." At 12 she wakes up yelling "I'M AWAKE. it's 12. press it. PRESS IT."
+   **Tapping Kuku before 12** doesn't count towards the 15 pets. She goes through: "don't get hasty. wait." → "have some patience." → "it's not 12 yet." → "asking won't make it faster." → "you've been asking him for an hour. he told me." → "Pakistani 12. look at the clock." → "tap tap tap. no." → "patience. you've heard of it?" → "i'm getting sleepy from all this waiting…". Then she **falls asleep** ("wake me at 12. (don't.)"). Tapping her while asleep cycles: "it's not time yet. don't wake me up." / "zzz… still not 12…" / "five more minutes…" / "DON'T wake me up." / "zzz… cinnabon… zzz". She also falls asleep after 45 seconds of no taps. Long-pressing her before 12 gets "no picking me up until 12." At 12 she wakes up yelling "I'M AWAKE. it's 12. press it. PRESS IT." and **stays on the yay sticker until Samiya presses the button**. Tapping her then just gets "the BUTTON. not me. PRESS IT." and she won't fall asleep again.
 
    Tapping the scene name at the bottom skips to the next scene. Teaser lines rotate under the timer. Only Kuku (she can be petted) and the sound button are visible. Nothing else on the site shows, and easter eggs can't be collected yet.
-3. **Reveal.** At 00:00:00 the heading changes to "It's 12. Your 12.", confetti fires and an **Open your surprise** button appears. Tapping it zooms and flashes white, then the site opens with confetti, a cat rain and Kuku saying "happy birthday noob. it's 12. YOUR 12."
+4. **Reveal.** At 00:00:00 the heading changes to "It's 12. Your 12.", confetti fires and an **Open your surprise** button appears. Tapping it zooms and flashes white, then the site opens with confetti, a cat rain and Kuku saying "happy birthday noob. it's 12. YOUR 12."
 
 After the first reveal, later visits go loader, then straight into the site where she left off.
 
@@ -49,9 +56,9 @@ Each level unlocks the next one. Every level has its own music track.
 | # | Level | What happens | Music |
 |---|---|---|---|
 | 0 | **Gate** | Ireland, Pakistan and a fake "GST" clock. Countdown until 12 PKT, then the question "Merey 12 ya apkay 12?" "My 12, obviously" continues. | Music-box waltz with a ticking clock |
-| 1 | **Wordle** | Birthday Wordle. The answer is **DUMBO**. Six tries, a real keyboard and a "Copy my result" button. | Light plucky loop |
-| 2 | **The cave** | "The cave of things you made me do." Tap 5 lanterns to light them, each showing a real quote from the chat. Then "Rest at the bench". | Dark cave ambience with bells (the Hollow Knight-feeling one) |
-| 3 | **Anime corner** | **Saiki K.:** tap Ψ to read her mind (her real chat lines). **Black Butler:** lift the cover to find cheesecake ("Yes, my lady"). **Take My Brother Away:** eat a chocolate bar before the brother steals it. | Upbeat anime-opening feel |
+| 1 | **Wordle** | Birthday Wordle. The answer is **DUMBO**. Six tries, a real keyboard and a "Copy my result" button. **If she fails**, the answer is NOT revealed. Kuku cries, a crying-cat popup shames her and a **Reset and try again (shameful)** button appears (plus "Give up and keep going"). The shame escalates: fail 1 "Six guesses. Five letters. Zero brain cells." / "kuku is embarrassed to be seen with you."; fail 2 "Twice. TWICE." / "i am telling ali."; fail 3+ "It starts with D. It ends with O. It is you." | Light plucky loop |
+| 2 | **The cave** | "The cave of things you made me do." Tap 5 lanterns to light them, each showing a real quote from the chat (the first is "play hollow knight"). Then "Rest at the bench". | Dark cave ambience with bells (the Hollow Knight-feeling one) |
+| 3 | **Anime corner** | **Saiki K.:** tap Ψ to read her mind (her real chat lines). **Black Butler:** lift the cover to find her birthday mithai, a bowl of gulab jamun in syrup ("Gulab jamun, my lady. Warm, in syrup…", then "Yes, my lady"). **Take My Brother Away:** eat a chocolate bar before the brother steals it. | Upbeat anime-opening feel |
 | 4 | **Gym arc** | Her 23 Sep gym trip ("omw back to home… gym", holding a Cinnabon). Tap **Curl** 22 times (one per year) while buff Kuku squashes and Kuku coaches ("What's the point of gym – Ali, 23 Sep"). At 22, a Cinnabon appears: **Eat it** ("You ate half. 'I didnt eat it pura.' Respect.") or **Resist** ("Character development. Kuku ate it instead."). | Training montage: kick drum and punchy bells |
 | 5 | **Cake** | 22 candles. "Blow out the candles" uses the mic, so she blows into the phone. "My mic is shy" lets her tap each candle instead. | Happy Birthday on a music box |
 | 6 | **Timeline** | 2024 (almost a day late), 2025 (on time, "Ur big 16"), 2026 (on time plus a website). | Soft piano |
@@ -59,9 +66,9 @@ Each level unlocks the next one. Every level has its own music track.
 
 ---
 
-## All 15 easter eggs (one for each day of October up to her birthday)
+## All 17 easter eggs
 
-Each one shows a yellow toast ("Easter egg n/15"), plays a jingle, buzzes the phone and adds to the counter in the top right. At the end, she sees which ones she found and gets a hint for each one she missed.
+Each one shows a yellow toast ("Easter egg n/17"), plays a jingle, buzzes the phone and adds to the counter in the top right. At the end, she sees which ones she found and gets a hint for each one she missed.
 
 | # | Egg (id) | How to get it | What happens | Hint shown at the end |
 |---|---|---|---|---|
@@ -70,7 +77,7 @@ Each one shows a yellow toast ("Easter egg n/15"), plays a jingle, buzzes the ph
 | 3 | Batman (`batman`) | Two places: on the first screen after the reveal, tap the **"Ali (Ireland)" clock box 3 times quickly**. Or tap the **"– Ali" signature** at the very bottom of the letter. | Batman cat with a bass riff: "I'm Batman. – Ali Hamza, a.k.a. pp" | Poke Ali's clock. Or his name. |
 | 4 | HAMZA (`hamza`) | Guess **HAMZA** in the Wordle | Kuku: "why is HE in your head. on your birthday." | Guess a name in the Wordle. |
 | 5 | Pick up Kuku (`hold`) | **Long-press Kuku** (hold about 1 second) | Buff Kuku: "put me DOWN. i go to the gym." | Don't just tap Kuku. Hold. |
-| 6 | Rude cat (`sign`) | Every 12 to 26 seconds after the reveal, a rude cat slides in from the **left or right** edge at a random height for about 4.5 seconds: **"ur short"**, **"UR GAY."** or the **middle-finger cat**. **Tap one** before it leaves. They keep coming after the egg is found. | Hiss, crying Kuku. "rude. accurate though." / "kuku did not write that sign." / "KUKU. language. (that was not kuku)" | Rude cats keep peeking in from the sides. Tap one. |
+| 6 | Rude cat (`sign`) | Every 12 to 26 seconds after the reveal, a rude cat slides in from the **left or right** edge (never mirrored, so the signs are always readable) at a random height for about 4.5 seconds: **"ur short"**, **"UR GAY."** or the **middle-finger cat**. **Tap one** before it leaves. They keep coming after the egg is found. | Hiss, crying Kuku. "rude. accurate though." / "kuku did not write that sign." / "KUKU. language. (that was not kuku)" | Rude cats keep peeking in from the sides. Tap one. |
 | 7 | Shake (`shake`) | **Shake the phone** | It rains cat stickers. Kuku: "it is raining kukus. happy now?" | Shake things up. |
 | 8 | Title (`title`) | Tap **"samiya's 22nd"** (top left) **5 times quickly** | Kuku: "stop poking things. you're 22." | Poke the top-left corner. |
 | 9 | Birth time (`born`) | Have the site open **between 1:30 and 1:59pm Pakistan time** (she was born at 1:30pm) | Kuku: "1:30pm. you were born now-ish. I remember things. sometimes." | Come back at the time you were born. |
@@ -79,6 +86,8 @@ Each one shows a yellow toast ("Easter egg n/15"), plays a jingle, buzzes the ph
 | 12 | Mind reader (`psi`) | Tap the **Ψ** in the Saiki panel **5 times** | Kuku: "psychic diagnosis: mostly food." | Keep reading your mind. |
 | 13 | Gojo (`gojo`) | In the Anime corner, a tiny blindfolded **Gojo peeks out at the bottom right of the "Take My Brother Away" panel**. Tap it. | Big chibi Gojo: "Throughout heaven and earth, you alone are the birthday one." Kuku: "he's cute. i'm cuter." | Something blindfolded is hiding in the anime corner. |
 | 14 | Sleepy Kuku (`idle`) | **Don't touch anything for 45 seconds** | Kuku falls asleep: "zzz... khana khalo... zzz". Tap to wake her ("i was SLEEPING.") | Do nothing for a while. |
+| 16 | Resist (`resist`) | In the gym level, after 22 curls, choose **Resist** instead of eating the Cinnabon | Buff Kuku: "resisted. ali is shook." | Say no to cinnamon. |
+| 17 | By hand (`candles`) | Blow out all 22 candles **by tapping them** (with "My mic is shy" or just tapping), without the mic blowing any | "by HAND. all 22. dedication." | Skip the mic. Do the candles yourself. |
 | 15 | Brother (`bro`) | In the chocolate bar, keep eating until the **brother has stolen 3 pieces** (each bite has a 45% chance he steals one) | Kuku: "you let him win. very big sister of you." | Let the brother win. |
 
 ### Other secrets (not counted as eggs)
@@ -93,7 +102,7 @@ Each one shows a yellow toast ("Easter egg n/15"), plays a jingle, buzzes the ph
 
 ## Kuku's moods
 
-Kuku (bottom right) switches stickers depending on what's happening, then goes back to her base mood. Reactions stay on screen for at least 4.5 seconds and speech bubbles for at least 3.5 seconds, so they don't flash past. If she hasn't been introduced yet when the site opens (for example on a visit after 12 that skips the countdown), she does her intro then.
+Kuku (bottom right) switches stickers depending on what's happening, then goes back to her base mood. Reactions stay on screen for at least 4.5 seconds and speech bubbles for at least 3.5 seconds, so they don't flash past. A level's intro mood waits until any reaction still on screen finishes instead of replacing it.
 
 | Mood | Sticker | When |
 |---|---|---|
