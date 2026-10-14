@@ -209,8 +209,8 @@ function fallAsleep(line) {
 /* ---------------- eggs ---------------- */
 const EGGS = {
   gst: 'Tapped the GST clock',
-  ali12: "Picked Ali's 12",
-  batman: 'Found Batman (it was Ali)',
+  ali12: "Picked Hamza's 12",
+  batman: 'Found Batman (it was Hamza)',
   hamza: 'Guessed HAMZA in the Wordle',
   hold: 'Long-pressed Kuku',
   sign: 'Caught a rude cat',
@@ -231,7 +231,7 @@ const EGGS = {
 const HINTS = {
   gst: 'A clock that does not exist.',
   ali12: 'The wrong answer at the start.',
-  batman: "Poke Ali's clock. Or his name.",
+  batman: "Poke Hamza's clock. Or his name.",
   hamza: 'Guess a name in the Wordle.',
   hold: "Don't just tap Kuku. Hold.",
   sign: 'Rude cats keep peeking in from the sides. Tap one.',
@@ -251,7 +251,7 @@ const HINTS = {
 }
 TOTAL_EGGS = Object.keys(EGGS).length
 $('#eggTotal').textContent = TOTAL_EGGS
-// ?ali&complete: everything unlocked, for Ali to preview the end state (sticker book last page etc.)
+// ?ali&complete: everything unlocked, for Hamza to preview the end state (sticker book last page etc.)
 if (ALI_MODE && params.has('complete')) {
   Object.assign(state, {
     preview: true, level: 8, revealed: true, introduced: true, finale: true, pets: 20, gym: 'resisted',
@@ -412,16 +412,16 @@ $('#pickAli').addEventListener('click', () => {
   sfx.thud()
   mood('cry', 2600)
   popCat('samiya-angry', 'you, every time he is late')
-  egg('ali12', "Picked Ali's 12", "that's 4 hours late. as usual 😭 try again.")
+  egg('ali12', "Picked Hamza's 12", "that's 4 hours late. as usual 😭 try again.")
 })
 $('#pickYou').addEventListener('click', () => { burst(0.5, 0.7); sfx.win(); mood('yay', 2600); unlock(1) })
 
-// batman: tap Ali's clock three times, or his signature
+// batman: tap Hamza's clock three times, or his signature
 function batman() {
   sfx.batman()
   buzz([40, 30, 40, 30, 120])
-  popCat('batman', "I'm Batman.<br><small>– Ali Hamza, a.k.a. pp</small>", 3200)
-  egg('batman', 'Found Batman (it was Ali)', "it's just ali in a cape. ignore him.")
+  popCat('batman', "I'm Batman.<br><small>– Hamza, a.k.a. pp</small>", 3200)
+  egg('batman', 'Found Batman (it was Hamza)', "it's just hamza in a cape. ignore him.")
 }
 let aliTaps = 0, aliTimer
 $('#clkIE').closest('.clock').addEventListener('click', () => {
@@ -540,7 +540,7 @@ function afterGuess(g) {
   if (g === ANSWER) return finishWordle(true, true)
   if (state.guesses.length >= 6) { state.wordleFails++; save(); return finishWordle(false, true) }
   const lines = ['hmm', 'no', 'close-ish', 'try again', 'noob']
-  msg.textContent = state.guesses.length >= 3 ? 'hint: what does Ali call you?' : pick(lines)
+  msg.textContent = state.guesses.length >= 3 ? 'hint: what does Hamza call you?' : pick(lines)
 }
 const tries = () => state.guesses.indexOf(ANSWER) + 1
 function finishWordle(won, live = false) {
@@ -559,7 +559,7 @@ function finishWordle(won, live = false) {
     const f = state.wordleFails
     const SHAME = [
       ['X/6. Six guesses. Five letters. Zero brain cells.', 'kuku is embarrassed to be seen with you.', '6 guesses.<br>0 brain cells.'],
-      ['X/6 again. Twice. TWICE. Hint: what does Ali call you?', 'i am telling ali. he will never let this go.', 'TWICE.'],
+      ['X/6 again. Twice. TWICE. Hint: what does Hamza call you?', 'i am telling hamza. he will never let this go.', 'TWICE.'],
       ['X/6. It starts with D. It ends with O. It is you.', 'this is a cry for help. D _ _ _ O.', 'kuku has lost all hope'],
     ]
     const [line, kukuLine, pop] = SHAME[Math.min(f - 1, SHAME.length - 1)] || SHAME[0]
@@ -942,7 +942,7 @@ resetIdle()
 const GYM_LINES = {
   1: 'one. ok.',
   5: 'five. kuku is impressed. (she is not)',
-  9: '"What\'s the point of gym" – Ali, 23 Sep. keep going.',
+  9: '"What\'s the point of gym" – Hamza, 23 Sep. keep going.',
   11: 'halfway. something smells like cinnamon…',
   15: 'form is questionable. continue.',
   19: 'bicep showcase loading…',
@@ -992,7 +992,7 @@ function bunChoice(ate) {
   } else {
     $('#bunResult').textContent = 'Character development. Kuku ate it instead.'
     mood('buff', 3000); sfx.win()
-    egg('resist', 'Resisted the Cinnabon', 'resisted. ali is shook.')
+    egg('resist', 'Resisted the Cinnabon', 'resisted. hamza is shook.')
   }
   $('#gymAfter').hidden = false
 }
@@ -1011,7 +1011,7 @@ if (state.gym) {
 /* ---------------- intro loader ---------------- */
 const LOADER_LINES = [
   'waking up Kuku (the cat, not you)…', 'Kuku woke up angry', 'teaching cats to hold signs', 'hiding 15 easter eggs',
-  'calibrating sarcasm', 'setting the clock to Pakistani 12', 'removing Ali\'s excuses',
+  'calibrating sarcasm', 'setting the clock to Pakistani 12', 'removing Hamza\'s excuses',
   'tuning the music box', 'buying a Cinnabon', 'almost there, noob',
 ]
 function runLoader() {
@@ -1185,7 +1185,7 @@ function runIntro() {
       ['eyes', 'Kuku is ME. the angry cat. not you.'],
       ['flower', "you're Samiya. the birthday one."],
       ['angry', "i'm the mascot of this website. being angry is my whole personality."],
-      ['music', 'turn your sound ON. kuku made music for this. (ali did not.)'],
+      ['music', 'turn your sound ON. kuku made music for this. (hamza did not.)'],
       ['buff', "i'll be in the corner the whole time. tap me and i'll react. badly."],
       ['eyes', 'also: 19 easter eggs are hidden everywhere. poke everything. hold things. shake things. mess with all of it.'],
       ready ? ['yay', "and it's already 12. so. let's go."] : ['sleep', 'right now my job is guarding your surprise until 12. Pakistani 12. come wait with me.'],
@@ -1270,7 +1270,7 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && document.body.classList.contains('is-waiting')) keepAwake(true)
 })
 
-// share card: a Wrapped-style image of her run, sent to Ali
+// share card: a Wrapped-style image of her run, sent to Hamza
 function runStats() {
   return {
     eggs: state.eggs.length, eggTotal: TOTAL_EGGS,
@@ -1307,7 +1307,7 @@ function saveCard() {
   const a = document.createElement('a')
   a.href = cardUrl; a.download = 'kuku-wrapped.png'
   document.body.append(a); a.click(); a.remove()
-  $('#shareStatus').textContent = 'Saved. Send it to Ali on WhatsApp.'
+  $('#shareStatus').textContent = 'Saved. Send it to Hamza on WhatsApp.'
 }
 $('#shareScore').addEventListener('click', openShareCard)
 $('#shareSend').addEventListener('click', async () => {

@@ -1,4 +1,4 @@
-// Draws a Spotify-Wrapped-style share card from her actual run, as a PNG she can send to Ali.
+// Draws a Spotify-Wrapped-style share card from her actual run, as a PNG she can send to Hamza.
 
 const W = 1080, H = 1350
 

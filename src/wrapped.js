@@ -1,4 +1,4 @@
-// "Samiya × Ali: Wrapped" — a guess-the-stat quiz built from the real chat export (16 Jun 2024 → 14 Oct 2026).
+// "Samiya × Hamza: Wrapped" — a guess-the-stat quiz built from the real chat export (16 Jun 2024 → 14 Oct 2026).
 
 const CARDS = [
   { type: 'intro', accent: '#ffcf6b' },
@@ -6,45 +6,45 @@ const CARDS = [
     text: "That's about 9 a day, for 2 years and 4 months." },
   { type: 'q', accent: '#2de2b0', key: 'texts',
     q: "You've sent 3,943 and 3,522 messages. Which one is you?",
-    options: [{ label: 'I sent more', value: 3943, who: 'You' }, { label: 'Ali sent more', value: 3522, who: 'Ali' }],
+    options: [{ label: 'I sent more', value: 3943, who: 'You' }, { label: 'Hamza sent more', value: 3522, who: 'Hamza' }],
     answer: 0,
     right: 'Correct. You talk more. It\'s now a scientific fact.',
     wrong: 'Wrong. You talk more. 421 more. Kuku has receipts.',
     extra: 'You also texted first on 127 of the 196 days we talked.' },
   { type: 'q', accent: '#9b6bff', key: 'voice',
     q: 'One of you sent 144 voice notes. The other sent 8. Who\'s who?',
-    options: [{ label: '144 is me', value: 144, who: 'You' }, { label: '144 is Ali', value: 8, who: 'Ali' }],
+    options: [{ label: '144 is me', value: 144, who: 'You' }, { label: '144 is Hamza', value: 8, who: 'Hamza' }],
     answer: 0,
     right: 'Yes. He reads. You perform.',
-    wrong: 'Ali has sent 8 voice notes in two years. EIGHT.',
-    extra: 'You: 144. Ali: 8.' },
+    wrong: 'Hamza has sent 8 voice notes in two years. EIGHT.',
+    extra: 'You: 144. Hamza: 8.' },
   { type: 'q', accent: '#ffd23f', key: 'emoji', big: true,
     q: 'Your most used emojis are 😭 and 😂. Which one is yours?',
-    options: [{ label: '😭', value: 122, who: 'You' }, { label: '😂', value: 27, who: 'Ali' }],
+    options: [{ label: '😭', value: 122, who: 'You' }, { label: '😂', value: 27, who: 'Hamza' }],
     answer: 0,
     right: '122 times. Respect.',
     wrong: 'No. You\'ve used 😭 122 times. He uses 😂 like a normal person.',
-    extra: 'You: 😭 × 122. Ali: 😂 × 27.' },
+    extra: 'You: 😭 × 122. Hamza: 😂 × 27.' },
   { type: 'q', accent: '#ff5d6c', key: 'insults',
     q: 'Insults traded. One of you has thrown about 60, the other about 35. Who\'s winning?',
-    options: [{ label: 'Me, obviously', value: 35, who: 'You', approx: true }, { label: 'Ali', value: 60, who: 'Ali', approx: true }],
+    options: [{ label: 'Me, obviously', value: 35, who: 'You', approx: true }, { label: 'Hamza', value: 60, who: 'Hamza', approx: true }],
     answer: 1,
-    right: 'Ali wins. Which means Ali loses. Check the translation guide later.',
+    right: 'Hamza wins. Which means Hamza loses. Check the translation guide later.',
     wrong: "You're good, but he's worse. ~60 to ~35.",
     breakdown: {
-      Ali: 'noob 13 · dumbass 12 · stupid 8 · idiot 5 · pagal 4 · nerd 4 · skill issue 4 · dum dum 2 · Dumbo 1',
+      Hamza: 'noob 13 · dumbass 12 · stupid 8 · idiot 5 · pagal 4 · nerd 4 · skill issue 4 · dum dum 2 · Dumbo 1',
       You: '🤡 7 · useless 4 · loser 3 · stupid 2 · ugly 2 · +13 words Kuku refuses to print',
     },
     extra: "He's only called you Dumbo once. Last birthday. Now it's the Wordle answer. Promoted." },
   { type: 'q', accent: '#5b8cff', key: 'idk', trick: true,
     q: "Who says 'idk' more?",
-    options: [{ label: 'Me', value: 26, who: 'You' }, { label: 'Ali', value: 26, who: 'Ali' }],
+    options: [{ label: 'Me', value: 26, who: 'You' }, { label: 'Hamza', value: 26, who: 'Hamza' }],
     answer: -1,
     right: 'Trick question. 26 each. The one thing you two agree on is not knowing.',
     wrong: 'Trick question. 26 each. The one thing you two agree on is not knowing.',
     extra: '26 = 26.' },
   { type: 'q', accent: '#3fd0e0', key: 'toilet', toilet: true,
-    q: 'How many times has Ali announced in chat that he\'s in the toilet?',
+    q: 'How many times has Hamza announced in chat that he\'s in the toilet?',
     options: [{ label: '3' }, { label: '7' }, { label: '12' }],
     answer: 2,
     right: '12. You know him too well.',
@@ -97,7 +97,7 @@ export function createWrapped({ gsap, state, save, sfx, buzz, say, mood, egg, re
   function cardHTML(c, i) {
     const n = `<p class="wr-kicker">Wrapped · ${i} of ${CARDS.length - 1}</p>`
     if (c.type === 'intro') {
-      return `<p class="wr-kicker">Samiya × Ali</p>
+      return `<p class="wr-kicker">Samiya × Hamza</p>
         <h3 class="wr-title">Wrapped</h3>
         <p class="wr-text">Two years of chat. Kuku counted everything. Kuku is tired.</p>
         <p class="wr-text wr-strong">Guess right or be judged.</p>
@@ -119,7 +119,7 @@ export function createWrapped({ gsap, state, save, sfx, buzz, say, mood, egg, re
         <div class="wr-opts ${c.options.length === 3 ? 'wr-three' : ''}">${opts}</div>
         <div class="wr-after" hidden>
           <p class="wr-react"></p>
-          ${c.breakdown ? `<div class="wr-break"><p><b>Ali</b> ${c.breakdown.Ali}</p><p><b>You</b> ${c.breakdown.You}</p></div>` : ''}
+          ${c.breakdown ? `<div class="wr-break"><p><b>Hamza</b> ${c.breakdown.Hamza}</p><p><b>You</b> ${c.breakdown.You}</p></div>` : ''}
           ${c.quotes ? `<ul class="wr-quotes">${c.quotes.map((q) => `<li>${q}</li>`).join('')}</ul><p class="wr-reply">${c.reply}</p>` : ''}
           <p class="wr-extra">${c.extra || ''}</p>
           <button class="btn btn-main wr-next" type="button">Next</button>
@@ -134,7 +134,7 @@ export function createWrapped({ gsap, state, save, sfx, buzz, say, mood, egg, re
       <p class="wr-text wr-strong">"${line}" – Kuku</p>
       <ul class="wr-summary">
         <li><b>7,465</b> messages</li>
-        <li><b>3,943</b> you vs <b>3,522</b> Ali</li>
+        <li><b>3,943</b> you vs <b>3,522</b> Hamza</li>
         <li><b>144</b> vs <b>8</b> voice notes</li>
         <li>😭 <b>122</b></li>
         <li><b>~60</b> vs <b>~35</b> insults</li>
@@ -213,7 +213,7 @@ export function createWrapped({ gsap, state, save, sfx, buzz, say, mood, egg, re
       } else if (s === total) book?.seen('wrapped')
       W.done = true; save()
       $('#wrCopy').addEventListener('click', async () => {
-        const text = `Samiya × Ali: Wrapped — ${s}/${total}\n7,465 messages · I sent 3,943 (Ali 3,522)\n144 voice notes vs his 8 · 😭 × 122\nidk 26 = 26 · Ali in the toilet: 12 times 🚽`
+        const text = `Samiya × Hamza: Wrapped — ${s}/${total}\n7,465 messages · I sent 3,943 (Hamza 3,522)\n144 voice notes vs his 8 · 😭 × 122\nidk 26 = 26 · Hamza in the toilet: 12 times 🚽`
         try { await navigator.clipboard.writeText(text); say('copied. send it to him.') } catch { say("couldn't copy. screenshot it instead.") }
       })
       $('#wrAgain')?.addEventListener('click', () => { W.answers = {}; W.done = false; W.max = 0; save(); say('again. focus this time.'); go(1) })

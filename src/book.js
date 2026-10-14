@@ -5,18 +5,18 @@ export const STICKERS = [
   // Kuku's moods
   { id: 'angry', page: 'kuku', name: 'Kuku', note: 'The original. Angry about everything, mostly you.', hint: 'Free with every birthday.' },
   { id: 'eyes', page: 'kuku', name: 'Sparkle Kuku', note: 'Watching. Always watching.', hint: 'Do something interesting.' },
-  { id: 'yay', page: 'kuku', name: 'YAYYY Kuku', note: 'Pure joy. Rare. Like Ali being on time.', hint: 'Win something.' },
+  { id: 'yay', page: 'kuku', name: 'YAYYY Kuku', note: 'Pure joy. Rare. Like Hamza being on time.', hint: 'Win something.' },
   { id: 'cry', page: 'kuku', name: 'Crying Kuku', note: 'Wet. Dramatic. Kuku when you pick the wrong 12.', hint: 'Disappoint her.' },
   { id: 'sleep', page: 'kuku', name: 'Sleepy Kuku', note: 'Guarding your surprise. Also drooling.', hint: 'Make her wait.' },
   { id: 'flower', page: 'kuku', name: 'Flower Kuku', note: "Brought you a flower. Picked it from someone else's garden.", hint: 'Look back on history.' },
   { id: 'music', page: 'kuku', name: 'DJ Kuku', note: 'Headphones on. Ignoring you rhythmically.', hint: 'Mess with the sound.' },
-  { id: 'buff', page: 'kuku', name: 'Gym Kuku', note: 'Goes to the gym. Unlike some people (Ali).', hint: 'Pick her up. Or lift.' },
+  { id: 'buff', page: 'kuku', name: 'Gym Kuku', note: 'Goes to the gym. Unlike some people (Hamza).', hint: 'Pick her up. Or lift.' },
   { id: 'calm', page: 'kuku', name: 'Calm Kuku', note: 'Only exists after 15 pets. Do not tell anyone she has feelings.', hint: 'Pet her. A lot. After 12.' },
   { id: 'heart', page: 'kuku', name: 'Soft Kuku', note: 'Holding a heart. Will deny it.', hint: 'Earn her love.' },
   { id: 'finger', page: 'kuku', name: 'Rude Kuku', note: 'Exactly what it looks like.', hint: 'Tell her to get lost.' },
   { id: 'wrapped', page: 'kuku', name: 'Wrapped Kuku', note: 'Got 6/6 on Wrapped. Suspicious. Did you read the chat export?', hint: 'Know him perfectly. 6 out of 6.' },
   // guest stars
-  { id: 'batman', page: 'guests', name: 'Batman (Ali)', note: "I'm Batman. He's not.", hint: 'Ali hides in two places.' },
+  { id: 'batman', page: 'guests', name: 'Batman (Hamza)', note: "I'm Batman. He's not.", hint: 'Hamza hides in two places.' },
   { id: 'gojo', page: 'guests', name: 'Gojo', note: 'Throughout heaven and earth, he alone is the pretty one. Kuku disagrees.', hint: 'Blindfolded. Anime corner.' },
   { id: 'samiya-angry', page: 'guests', name: 'Samiya, angry', note: "You, every time he's late. A self-portrait.", hint: 'Pick the wrong 12.' },
   { id: 'sign-short', page: 'guests', name: 'Sign cat: ur short', note: 'Factual.', hint: 'Catch a rude cat.' },
@@ -27,7 +27,7 @@ export const STICKERS = [
 export const QUOTES = [
   { id: 'q-gst', text: 'I DONT HAVE GST CLOCK', hint: 'A clock that does not exist.' },
   { id: 'q-late', text: "that's 4 hours late. as usual 😭 try again.", hint: 'The wrong 12.' },
-  { id: 'q-cape', text: "it's just ali in a cape. ignore him.", hint: 'Find Batman.' },
+  { id: 'q-cape', text: "it's just hamza in a cape. ignore him.", hint: 'Find Batman.' },
   { id: 'q-hamza', text: 'why is HE in your head. on your birthday.', hint: 'A certain name in the Wordle.' },
   { id: 'q-embarrassed', text: 'kuku is embarrassed to be seen with you.', hint: 'Fail the Wordle.' },
   { id: 'q-impressive', text: 'ok that was impressive. noob.', hint: 'Wordle in 2.' },
@@ -37,7 +37,7 @@ export const QUOTES = [
   { id: 'q-sister', text: 'you let him win. very big sister of you.', hint: 'The chocolate bar.' },
   { id: 'q-bicep', text: 'bicep showcase easy.', hint: '22 reps.' },
   { id: 'q-meetha', text: 'everyday you crave meetha. it is ok. it is your birthday.', hint: 'Give in.' },
-  { id: 'q-shook', text: 'resisted. ali is shook.', hint: "Don't give in." },
+  { id: 'q-shook', text: 'resisted. hamza is shook.', hint: "Don't give in." },
   { id: 'q-hand', text: 'by HAND. all 22. dedication.', hint: 'No mic needed.' },
   { id: 'q-wish', text: 'wish made. i hope it was not dumb.', hint: 'Candles.' },
   { id: 'q-gym', text: 'put me DOWN. i go to the gym. look at these.', hint: 'Pick her up.' },
@@ -145,13 +145,13 @@ export function createBook({ CAT, state, save, sfx, gsap, reduced, eggs, onCompl
       <p>Every sticker, every line, every grumpy thing Kuku said. That's a lot of tapping on a cat for one birthday.</p>
       <p>So here's the rarest thing on this whole website. The only picture of us. It's not even a good picture.</p>
       <figure class="sb-polaroid">
-        <img class="sb-photo" src="${US_PHOTO}" alt="Samiya and Ali, the only picture of them together" />
+        <img class="sb-photo" src="${US_PHOTO}" alt="Samiya and Hamza, the only picture of them together" />
         <img class="sb-photo-kuku" src="${CAT.heart}" alt="" />
         <figcaption>you: in focus. me: a thumbs up and a lens flare.</figcaption>
       </figure>
       <p>You're in focus. I'm a blurry thumbs up with a lightsaber through my face. Honestly, accurate. We'll take a better one someday.</p>
       <p>Noob. (See the translation guide, line one.)</p>
-      <p class="sb-sign">– Ali</p>
+      <p class="sb-sign">– Hamza</p>
     </div>`
   }
 
