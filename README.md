@@ -100,6 +100,23 @@ Each one shows a yellow toast ("Easter egg n/17"), plays a jingle, buzzes the ph
 
 ---
 
+## Sticker book
+
+A **📖 book button** in the top bar (after the reveal) opens Samiya's sticker book. Everything she finds sticks in it automatically and is saved, so it fills up as she plays. **48 collectibles: 16 stickers + 32 Kuku lines.**
+
+- **New finds:** a pink "+ sticker: Sleepy Kuku" / "+ quote for the book" pop-up, and a red count badge on the book button until she opens it.
+- **Pages** (tabs at the top, ‹ › arrows, or swipe left/right):
+  1. **Kuku**: her 11 moods (Kuku, Sparkle, YAYYY, Crying, Sleepy, Flower, DJ, Gym, Calm, Soft, Rude).
+  2. **Guest stars**: Batman (Ali), Gojo, Samiya angry, Sign cat "ur short", Sign cat "UR GAY.".
+  3. **Things Kuku said**: 32 lines. Unheard ones show as blacked-out word bars with a hint underneath.
+  4. **Easter eggs**: all 17, found ones ticked, missing ones as ??? with hints.
+  5. **Last page**: padlocked ("This page is stuck shut") until all 48 are collected. Then it shows the heart cat and a note from Ali ending in "Noob. (See the translation guide, line one.)"
+- **Collected stickers** are taped in at a slight tilt. Tap one to see it big with a caption ("YAYYY Kuku: Pure joy. Rare. Like Ali being on time.").
+- **Uncollected stickers** are dark silhouettes with "???". Tapping one shakes it and shows a hint.
+- **Completing the book:** heart Kuku, confetti and "the sticker book is FULL. go look at the last page. noob."
+
+When things get collected: a sticker counts the first time it appears (Kuku changing mood, the intro screen, a pop-up). The sign cats count when she **catches** one. A line counts the first time Kuku says it. The cat rain and the loader don't count. Sticker names, captions and hints are in `STICKERS` in `src/book.js`; collectible lines are in `QUOTES` (matched exactly against what Kuku says).
+
 ## Kuku's moods
 
 Kuku (bottom right) switches stickers depending on what's happening, then goes back to her base mood. Reactions stay on screen for at least 4.5 seconds and speech bubbles for at least 3.5 seconds, so they don't flash past. A level's intro mood waits until any reaction still on screen finishes instead of replacing it.
@@ -137,6 +154,7 @@ Pop-up stickers: `batman`, `gojo`, `samiya-angry`. Rude peekers: `sign-short`, `
 index.html              all level markup and the letter text
 src/main.js             loader, countdown, reveal, levels, Wordle, gym, Kuku moods, easter eggs
 src/bg.js               the five animated countdown backgrounds
+src/book.js             the sticker book: collectibles, pages, last page
 src/audio.js            music themes + sound effects
 src/style.css           styling (Gaegu + Atkinson Hyperlegible fonts)
 src/assets/cats/*.webp  stickers (background removed, white outline)

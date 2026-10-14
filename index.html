@@ -53,6 +53,9 @@
   <header class="hud">
     <button class="hud-title" id="hudTitle" type="button">samiya's 22nd</button>
     <div class="hud-right">
+      <button class="book-btn" id="bookBtn" type="button" aria-label="Open sticker book" data-new="">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 6.5c3.5-1.6 7-1.6 11 .8v19c-4-2.4-7.5-2.4-11-.8z" fill="#ff8fb6" stroke="#eef1ff" stroke-width="2" stroke-linejoin="round"/><path d="M27 6.5c-3.5-1.6-7-1.6-11 .8v19c4-2.4 7.5-2.4 11-.8z" fill="#ffcf6b" stroke="#eef1ff" stroke-width="2" stroke-linejoin="round"/></svg>
+      </button>
       <button class="sound-btn" id="soundBtn" type="button" aria-label="Turn sound off"><img id="soundIcon" alt="" /></button>
       <span class="hud-eggs" id="hudEggs" aria-live="polite"><span class="egg-icon" aria-hidden="true"></span><b id="eggCount">0</b>/17</span>
     </div>
@@ -295,6 +298,33 @@
       <span class="blush blush-l" aria-hidden="true"></span>
       <span class="blush blush-r" aria-hidden="true"></span>
     </button>
+  </div>
+
+  <div class="book-chip" id="bookChip" role="status" aria-live="polite" hidden></div>
+
+  <!-- sticker book -->
+  <div class="book" id="book" hidden role="dialog" aria-label="Sticker book">
+    <div class="book-paper">
+      <div class="book-head">
+        <div>
+          <p class="book-owner">Samiya's sticker book</p>
+          <h2 id="bookTitle">Kuku</h2>
+        </div>
+        <button class="book-close" id="bookClose" type="button" aria-label="Close sticker book">×</button>
+      </div>
+      <div class="book-tabs" role="tablist">
+        <button class="sb-tab" type="button">Kuku</button><button class="sb-tab" type="button">Guests</button><button class="sb-tab" type="button">Quotes</button><button class="sb-tab" type="button">Eggs</button><button class="sb-tab" type="button">Last</button>
+      </div>
+      <div class="book-progress"><span id="bookCount"></span><div class="book-bar"><span id="bookBar"></span></div></div>
+      <p class="book-sub" id="bookSub"></p>
+      <div class="book-page" id="bookPage"></div>
+      <div class="book-foot">
+        <button class="book-turn" id="bookPrev" type="button" aria-label="Previous page">‹</button>
+        <span id="bookPageNo"></span>
+        <button class="book-turn" id="bookNext" type="button" aria-label="Next page">›</button>
+      </div>
+      <div class="book-detail" id="bookDetail" hidden></div>
+    </div>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>

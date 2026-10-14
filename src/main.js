@@ -8,6 +8,7 @@ import confetti from 'canvas-confetti'
 import kukuCalm from './assets/kuku-calm.png'
 import { initAudio, playTheme, sfx, isMuted, setMuted } from './audio.js'
 import { createBackground } from './bg.js'
+import { createBook } from './book.js'
 
 const CAT = Object.fromEntries(
   Object.entries(import.meta.glob('./assets/cats/*.webp', { eager: true, import: 'default' }))
@@ -74,9 +75,10 @@ document.addEventListener('click', (e) => { if (e.target.closest('.btn, .clock-g
 const bubble = $('#bubble')
 const kuku = $('#kuku')
 const kukuImg = $('#kukuImg')
-let bubbleTimer
+let bubbleTimer, book = null
 function say(text, ms = 4500) {
   ms = Math.max(ms, 3500)
+  book?.heard(text)
   bubble.textContent = text
   bubble.classList.add('show')
   clearTimeout(bubbleTimer)
@@ -90,6 +92,7 @@ function mood(name, ms = 2400) {
   clearTimeout(moodTimer)
   reactionUntil = ms ? Date.now() + Math.max(ms * 2, 4500) : 0
   sleeping = name === 'sleep' && !ms
+  book?.seen(name)
   if (kukuImg.dataset.mood !== name) {
     kukuImg.dataset.mood = name
     kukuImg.src = CAT[name]
@@ -103,6 +106,7 @@ mood(baseMood(), 0)
 
 // big centre reaction sticker
 function popCat(name, caption, ms = 2600) {
+  book?.seen(name)
   const wrap = document.createElement('div')
   wrap.className = 'popcat'
   wrap.innerHTML = `<img src="${CAT[name]}" alt=""><p>${caption}</p>`
@@ -237,6 +241,15 @@ const HINTS = {
   resist: 'Say no to cinnamon.',
   candles: 'Skip the mic. Do the candles yourself.',
 }
+book = createBook({
+  CAT, state, save, sfx, gsap, reduced, eggs: { EGGS, HINTS },
+  onComplete: () => setTimeout(() => {
+    mood('heart', 4000); bigCelebrate(); sfx.win()
+    say('the sticker book is FULL. go look at the last page. noob.', 7000)
+  }, 1500),
+})
+book.seen('angry')
+
 const toast = $('#toast')
 let toastTimer
 function renderEggCount() { $('#eggCount').textContent = state.eggs.length }
@@ -315,6 +328,7 @@ peeker.addEventListener('click', () => {
   buzz(30)
   mood('cry', 1800)
   const line = PEEKERS[peeker.dataset.name]
+  book?.seen(peeker.dataset.name)
   hidePeek(peeker.classList.contains('from-left') ? -150 : 150)
   egg('sign', 'Caught a rude cat', line)
   if (state.eggs.includes('sign')) say(line)
@@ -1122,6 +1136,8 @@ function runIntro() {
       i = n
       const [moodName, line] = LINES[i]
       cat.src = CAT[moodName]
+      book?.seen(moodName)
+      book?.heard(line)
       if (!reduced) gsap.fromTo(cat, { scale: 0.7, rotate: -10 }, { scale: 1, rotate: 0, duration: 0.45, ease: 'back.out(2.2)' })
       $$('i', dots).forEach((d, k) => d.classList.toggle('on', k <= i))
       clearInterval(typing)
