@@ -122,6 +122,13 @@ function noise(t, dur, vol, freq = 1200, type = 'bandpass', out = sfxBus) {
   src.start(t)
 }
 
+function kick(t, out = musicBus) {
+  const o = ctx.createOscillator(); const g = ctx.createGain()
+  o.frequency.setValueAtTime(130, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.12)
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25)
+  o.connect(g).connect(out); o.start(t); o.stop(t + 0.3)
+}
+
 /* ---------------- themes (all original) ---------------- */
 // melody: per-step MIDI (null = rest). bars: [{ chord, bass }]
 const expand = (pairs) => pairs.flatMap(([n, s]) => [n, ...Array(s - 1).fill(null)])
@@ -194,6 +201,17 @@ const THEMES = {
     padVol: 0.025,
   },
 }
+// gym: training-montage energy, kick drum + bass + punchy bells in E minor
+THEMES.gym = {
+  bpm: 138, spb: 8, lead: 'bell', leadVol: 0.12, kick: true, hats: true, bassEvery: 2,
+  bars: [
+    { chord: [52, 55, 59], bass: 40 }, { chord: [48, 52, 55], bass: 36 },
+    { chord: [55, 59, 62], bass: 43 }, { chord: [50, 54, 57], bass: 38 },
+  ],
+  melody: [76, null, 76, 79, null, 76, 74, null, 72, null, 72, 76, null, 72, 71, null,
+    79, null, 79, 83, null, 79, 78, null, 74, null, 78, null, 81, null, 83, null],
+  padVol: 0.02,
+}
 THEMES.time = THEMES.letter
 
 /* ---------------- scheduler ---------------- */
@@ -213,6 +231,8 @@ function playStep(th, s, t) {
     if (th.arpInst === 'piano') piano(m, t, th.arpVol ?? 0.05, 1.4)
     else pluck(m, t, th.arpVol ?? 0.07, 0.4)
   }
+  if (th.kick && pos % 2 === 0) kick(t)
+  if (th.hats && pos % 2 === 1) noise(t, 0.04, 0.05, 7000, 'highpass', musicBus)
   if (th.tick && pos % 2 === 0) noise(t, 0.03, pos === 0 ? 0.05 : 0.025, 3500, 'highpass', musicBus)
   if (th.melody) {
     const n = th.melody[s % th.melody.length]
@@ -259,6 +279,7 @@ export function startMusic() {
 const ok = () => ctx && ctx.state === 'running' && !muted
 const now = () => ctx.currentTime + 0.005
 export const sfx = {
+  rep(n) { if (!ok()) return; const t = now(); kick(t, sfxBus); bell(60 + [0, 2, 4, 5, 7, 9, 11][n % 7] + 12 * Math.floor(n / 7) % 24, t, 0.08, 0.4, sfxBus) },
   tap() { if (!ok()) return; pluck(84, now(), 0.06, 0.12, sfxBus) },
   key() { if (!ok()) return; noise(now(), 0.025, 0.12, 2200, 'bandpass') },
   back() { if (!ok()) return; pluck(72, now(), 0.06, 0.1, sfxBus) },

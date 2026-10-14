@@ -4,7 +4,7 @@ A small, grumpy, phone-first website for **Samiya's 22nd birthday (15 October 20
 Kuku, an angry cat sticker, guides her through seven levels, comments on everything and changes mood as she goes. There are 15 hidden easter eggs to find.
 
 - **Live:** https://plasteredpeak.github.io/kuku-birthday/
-- **Opens at:** 00:00 on 15 Oct, Pakistan time (PKT, UTC+5). That's 20:00 on 14 Oct in Ireland (IST, UTC+1). Before then, the site shows a countdown.
+- **Opens at:** 00:00 on 15 Oct, Pakistan time (PKT, UTC+5). That's 20:00 on 14 Oct in Ireland (IST, UTC+1). Before then, the site shows only the countdown.
 - **Built for:** Samsung Galaxy S25 (Chrome or Samsung Internet), portrait. It works on any phone and on desktop too.
 
 ---
@@ -13,14 +13,30 @@ Kuku, an angry cat sticker, guides her through seven levels, comments on everyth
 
 | URL | What it does |
 |---|---|
-| `/kuku-birthday/` | The real thing. Shows the countdown until 12 PKT, then opens on its own. |
-| `/kuku-birthday/?ali` | Skips the countdown so you can play it any time. |
+| `/kuku-birthday/` | The real thing. Loader, then the countdown until 12 PKT, then the "Open your surprise" button. |
+| `/kuku-birthday/?ali` | Skips the countdown: the reveal button shows straight away. |
+| `/kuku-birthday/?ali&wait&reset` | Fakes a 20-second countdown so you can watch the reveal happen, from a fresh start. |
 | `/kuku-birthday/?ali&reset` | Skips the countdown and wipes saved progress (levels, eggs, pets, Wordle). |
 | `/kuku-birthday/?ali&all` | Unlocks every level at once, to jump straight to any section. |
 
 Progress is saved in the browser (localStorage), so if she closes the tab she'll pick up where she left off. **Before sending the link, open it once with `?reset`** on your own phone, so your test progress doesn't confuse you later.
 
 ---
+
+## How it opens
+
+1. **Loader.** Kuku in the middle with every other sticker orbiting her as the site loads. Loading lines cycle underneath ("calibrating sarcasm", "removing Ali's excuses", "buying a Cinnabon"…). When it reaches 100%, the stickers collapse into Kuku and **Tap to open** appears. That tap is also what lets the music start, since phones block sound until a tap.
+2. **Countdown.** A full-screen timer (hours, minutes, seconds) over animated backgrounds that change every 25 seconds, each with its own music track:
+   - the cave: glowing fireflies drifting up under stalactites (cave music)
+   - the night sky: twinkling stars and shooting stars (soft piano)
+   - petals: pink petals falling (anime music)
+   - kuku clouds: faded stickers floating up (Wordle loop)
+   - aurora: drifting green, blue and pink light (music-box waltz)
+
+   Tapping the scene name at the bottom skips to the next scene. Teaser lines rotate under the timer. Only Kuku (she can be petted) and the sound button are visible. Nothing else on the site shows, and easter eggs can't be collected yet.
+3. **Reveal.** At 00:00:00 the heading changes to "It's 12. Your 12.", confetti fires and an **Open your surprise** button appears. Tapping it zooms and flashes white, then the site opens with confetti, a cat rain and Kuku saying "happy birthday noob. it's 12. YOUR 12."
+
+After the first reveal, later visits go loader, then straight into the site where she left off.
 
 ## The levels
 
@@ -32,9 +48,10 @@ Each level unlocks the next one. Every level has its own music track.
 | 1 | **Wordle** | Birthday Wordle. The answer is **DUMBO**. Six tries, a real keyboard and a "Copy my result" button. | Light plucky loop |
 | 2 | **The cave** | "The cave of things you made me do." Tap 5 lanterns to light them, each showing a real quote from the chat. Then "Rest at the bench". | Dark cave ambience with bells (the Hollow Knight-feeling one) |
 | 3 | **Anime corner** | **Saiki K.:** tap Ψ to read her mind (her real chat lines). **Black Butler:** lift the cover to find cheesecake ("Yes, my lady"). **Take My Brother Away:** eat a chocolate bar before the brother steals it. | Upbeat anime-opening feel |
-| 4 | **Cake** | 22 candles. "Blow out the candles" uses the mic, so she blows into the phone. "My mic is shy" lets her tap each candle instead. | Happy Birthday on a music box |
-| 5 | **Timeline** | 2024 (almost a day late), 2025 (on time, "Ur big 16"), 2026 (on time plus a website). | Soft piano |
-| 6 | **Letter** | Ali's letter with the translation guide, then the "Get lost" button, then the finale with her easter-egg score and hints for the ones she missed. | Soft piano |
+| 4 | **Gym arc** | Her 23 Sep gym trip ("omw back to home… gym", holding a Cinnabon). Tap **Curl** 22 times (one per year) while buff Kuku squashes and Kuku coaches ("What's the point of gym – Ali, 23 Sep"). At 22, a Cinnabon appears: **Eat it** ("You ate half. 'I didnt eat it pura.' Respect.") or **Resist** ("Character development. Kuku ate it instead."). | Training montage: kick drum and punchy bells |
+| 5 | **Cake** | 22 candles. "Blow out the candles" uses the mic, so she blows into the phone. "My mic is shy" lets her tap each candle instead. | Happy Birthday on a music box |
+| 6 | **Timeline** | 2024 (almost a day late), 2025 (on time, "Ur big 16"), 2026 (on time plus a website). | Soft piano |
+| 7 | **Letter** | Ali's letter with the translation guide, then the "Get lost" button, then the finale with her easter-egg score and hints for the ones she missed. | Soft piano |
 
 ---
 
@@ -46,10 +63,10 @@ Each one shows a yellow toast ("Easter egg n/15"), plays a jingle, buzzes the ph
 |---|---|---|---|---|
 | 1 | GST clock (`gst`) | Tap the **GST** clock on the gate | Kuku: "I DONT HAVE GST CLOCK" (her own line), crying Kuku | A clock that does not exist. |
 | 2 | Ali's 12 (`ali12`) | On the gate, tap **"Ali's 12"** | Screen shakes, angry chibi Samiya pops up: "you, every time he is late". Kuku: "that's 4 hours late. as usual 😭" | The wrong answer at the start. |
-| 3 | Batman (`batman`) | Tap **Ali's (Ireland) clock 3 times quickly**, or tap the **"– Ali" signature** at the end of the letter | Batman cat with a bass riff: "I'm Batman. – Ali Hamza, a.k.a. pp" | Poke Ali's clock. Or his name. |
+| 3 | Batman (`batman`) | Two places: on the first screen after the reveal, tap the **"Ali (Ireland)" clock box 3 times quickly**. Or tap the **"– Ali" signature** at the very bottom of the letter. | Batman cat with a bass riff: "I'm Batman. – Ali Hamza, a.k.a. pp" | Poke Ali's clock. Or his name. |
 | 4 | HAMZA (`hamza`) | Guess **HAMZA** in the Wordle | Kuku: "why is HE in your head. on your birthday." | Guess a name in the Wordle. |
 | 5 | Pick up Kuku (`hold`) | **Long-press Kuku** (hold about 1 second) | Buff Kuku: "put me DOWN. i go to the gym." | Don't just tap Kuku. Hold. |
-| 6 | Sign cat (`sign`) | A stick cat holding **"ur short"** or **"UR GAY."** slides in from the left for about 5 seconds, a few seconds after the Wordle, Anime and Timeline levels open. **Tap it** before it leaves. | Kuku: "rude. accurate though." | Someone keeps peeking from the left with a sign. |
+| 6 | Rude cat (`sign`) | Every 12 to 26 seconds after the reveal, a rude cat slides in from the **left or right** edge at a random height for about 4.5 seconds: **"ur short"**, **"UR GAY."** or the **middle-finger cat**. **Tap one** before it leaves. They keep coming after the egg is found. | Hiss, crying Kuku. "rude. accurate though." / "kuku did not write that sign." / "KUKU. language. (that was not kuku)" | Rude cats keep peeking in from the sides. Tap one. |
 | 7 | Shake (`shake`) | **Shake the phone** | It rains cat stickers. Kuku: "it is raining kukus. happy now?" | Shake things up. |
 | 8 | Title (`title`) | Tap **"samiya's 22nd"** (top left) **5 times quickly** | Kuku: "stop poking things. you're 22." | Poke the top-left corner. |
 | 9 | Birth time (`born`) | Have the site open **between 1:30 and 1:59pm Pakistan time** (she was born at 1:30pm) | Kuku: "1:30pm. you were born now-ish. I remember things. sometimes." | Come back at the time you were born. |
@@ -65,8 +82,8 @@ Each one shows a yellow toast ("Easter egg n/15"), plays a jingle, buzzes the ph
 - **Wordle words with replies:** IDIOT ("translation: text me when you get home"), PAGAL, SHORT ("the sign cat agrees"), KUKUS, HAPPY, CAKES.
 - **Wordle:** solving it in 1 or 2 gets "Wordle in 2, as promised", a callback to the letter.
 - **Letter:** tap the red words **noob / idiot / pagal** for their translation. Tap **gym** for buff Kuku.
-- **"Get lost":** Kuku zooms off-screen, comes back holding a heart and says "...i came back. you didn't go either. good."
-- **Countdown:** if she has the site open at exactly midnight, it opens on its own with confetti and "it's 12. YOUR 12."
+- **"Get lost":** Kuku turns into the middle-finger cat, zooms off-screen, then comes back holding a heart: "...i came back. you didn't go either. good."
+- **Countdown:** if she has the countdown open at exactly midnight, the reveal button pops up on its own with confetti and Kuku yelling "PRESS IT."
 
 ---
 
@@ -85,16 +102,16 @@ Kuku (bottom right) switches stickers depending on what's happening, then goes b
 | sleep | `sleep` | Bench, and the idle egg (stays asleep until tapped) |
 | music | `music` | Turning sound on, anime intro |
 | flower | `flower` | Timeline intro, extra pets |
-| buff | `buff` | Long-press, "gym" in the letter |
-| zoom | `zoom` | "Get lost" |
+| buff | `buff` | Long-press, "gym" in the letter, the whole gym level |
+| finger | `finger` (middle-finger cat) | "Get lost" (Kuku flips her off and zooms away), also one of the rude peekers |
 
-Pop-up stickers: `batman`, `gojo`, `samiya-angry`. Peeking sticker: `sign-short` / `sign-gay`. The shake cat-rain uses the 11 mood stickers.
+Pop-up stickers: `batman`, `gojo`, `samiya-angry`. Rude peekers: `sign-short`, `sign-gay`, `finger`. The shake cat-rain uses the 11 mood stickers.
 
 ---
 
 ## Sound
 
-- **Music:** original tracks played live with Web Audio (`src/audio.js`), so there are no audio files to download. The Hollow Knight soundtrack is copyrighted, so these are new pieces in that mood. "Happy Birthday" is public domain.
+- **Music:** original tracks played live with Web Audio (`src/audio.js`): clock waltz, Wordle loop, cave ambience, anime opener, gym montage, Happy Birthday music box and soft piano, so there are no audio files to download. The Hollow Knight soundtrack is copyrighted, so these are new pieces in that mood. "Happy Birthday" is public domain.
 - **Effects:** button taps, Wordle keys and tile chimes, lantern bells, geo tinkles, meows and hisses, chocolate crunch, candle puffs, confetti pops, the Batman riff, a Gojo "domain" chord and the egg jingle.
 - **Mute:** the headphones cat in the top bar. The choice is remembered.
 - Phones block sound until the first tap, so the music starts after her first touch.
@@ -105,7 +122,8 @@ Pop-up stickers: `batman`, `gojo`, `samiya-angry`. Peeking sticker: `sign-short`
 
 ```
 index.html              all level markup and the letter text
-src/main.js             levels, Wordle, Kuku moods, easter eggs, confetti
+src/main.js             loader, countdown, reveal, levels, Wordle, gym, Kuku moods, easter eggs
+src/bg.js               the five animated countdown backgrounds
 src/audio.js            music themes + sound effects
 src/style.css           styling (Gaegu + Atkinson Hyperlegible fonts)
 src/assets/cats/*.webp  stickers (background removed, white outline)
@@ -120,6 +138,9 @@ art-originals/*.jpg     the original cat images
 - Cave quotes: `MEMORIES` in `src/main.js`
 - Mind-reader thoughts: `THOUGHTS` in `src/main.js`
 - Opening time: `BIRTHDAY` in `src/main.js` (in UTC)
+- Countdown teasers: `TEASES` in `src/main.js`; loader lines: `LOADER_LINES`
+- Gym coach lines: `GYM_LINES` in `src/main.js`
+- Rude peekers and their lines: `PEEKERS` in `src/main.js`
 - Music: `THEMES` in `src/audio.js`
 
 ## Develop and deploy

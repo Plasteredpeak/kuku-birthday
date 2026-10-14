@@ -10,7 +10,37 @@
   <meta property="og:description" content="Kuku has a message for you. Kuku is not happy about it." />
   <link rel="icon" id="favicon" href="data:," />
 </head>
-<body>
+<body class="is-loading">
+  <!-- intro loader -->
+  <div class="loader" id="loader">
+    <div class="orbit" id="orbit" aria-hidden="true"></div>
+    <img class="loader-kuku" data-cat="angry" alt="Kuku" />
+    <p class="loader-line" id="loaderLine" aria-live="polite">waking up Kuku…</p>
+    <div class="loader-bar" aria-hidden="true"><span id="loaderBar"></span></div>
+    <p class="loader-pct" id="loaderPct">0%</p>
+    <button class="btn btn-main loader-go" id="loaderGo" type="button" hidden>Tap to open</button>
+  </div>
+
+  <!-- countdown stage -->
+  <div class="stage" id="stage" hidden>
+    <canvas class="stage-bg" id="bgA" aria-hidden="true"></canvas>
+    <canvas class="stage-bg" id="bgB" aria-hidden="true"></canvas>
+    <div class="stage-inner">
+      <p class="stage-kicker" id="stageKicker">Your surprise opens in</p>
+      <div class="cd" id="cd" role="timer" aria-live="off">
+        <div class="cd-unit"><b id="cdH">00</b><span>hours</span></div>
+        <i aria-hidden="true">:</i>
+        <div class="cd-unit"><b id="cdM">00</b><span>minutes</span></div>
+        <i aria-hidden="true">:</i>
+        <div class="cd-unit"><b id="cdS">00</b><span>seconds</span></div>
+      </div>
+      <p class="stage-tease" id="tease"></p>
+      <button class="btn btn-main reveal-btn" id="revealBtn" type="button" hidden>Open your surprise</button>
+      <button class="stage-scene" id="sceneBtn" type="button">scene: <span id="sceneName">the cave</span></button>
+    </div>
+  </div>
+  <div class="flash" id="flash" aria-hidden="true"></div>
+
   <header class="hud">
     <button class="hud-title" id="hudTitle" type="button">samiya's 22nd</button>
     <div class="hud-right">
@@ -37,13 +67,7 @@
         </button>
       </div>
 
-      <div id="gateWait" class="gate-wait" hidden>
-        <h1 class="display">Not yet.</h1>
-        <p class="lede">This opens at 12. Your 12. Pakistani 12. Kuku checked.</p>
-        <div class="countdown" id="countdown" aria-live="polite">--:--:--</div>
-      </div>
-
-      <div id="gateOpen" class="gate-open" hidden>
+      <div id="gateOpen" class="gate-open">
         <h1 class="display">Merey 12 ya apkay 12?</h1>
         <p class="lede">Pick whose midnight counts. Choose carefully, this has been a three-year argument.</p>
         <div class="choice">
@@ -123,8 +147,42 @@
       </div>
     </section>
 
-    <!-- 4 · cake -->
-    <section class="level" id="lv-cake" data-level="4" hidden>
+    <!-- 4 · gym -->
+    <section class="level" id="lv-gym" data-level="4" hidden>
+      <h2 class="display">Gym arc</h2>
+      <p class="lede">23 September: "omw back to home." From where? "gym." Holding? A Cinnabon. Show us the form. 22 reps, one for each year.</p>
+      <div class="gym-stage">
+        <img class="gym-cat" id="gymCat" data-cat="buff" alt="Buff Kuku" />
+        <div class="gym-shadow" aria-hidden="true"></div>
+      </div>
+      <div class="rep-row">
+        <span class="rep-count"><b id="reps">0</b>/22 reps</span>
+        <div class="rep-bar" aria-hidden="true"><span id="repBar"></span></div>
+      </div>
+      <button class="btn btn-main curl-btn" id="curlBtn" type="button">Curl</button>
+      <p class="gym-line" id="gymLine" aria-live="polite">Tap Curl. Fast. Kuku is spotting you (badly).</p>
+      <div class="bun" id="bun" hidden>
+        <svg class="bun-svg" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="62" r="50" fill="#b9733d"/>
+          <circle cx="60" cy="62" r="50" fill="none" stroke="#8a4f24" stroke-width="5"/>
+          <path d="M60 62 m0 0 a6 6 0 0 1 12 0 a12 12 0 0 1 -24 0 a18 18 0 0 1 36 0 a24 24 0 0 1 -48 0 a30 30 0 0 1 60 0 a36 36 0 0 1 -72 0" fill="none" stroke="#7a4220" stroke-width="5" stroke-linecap="round"/>
+          <path d="M22 50 q12 -30 40 -32 q30 0 38 26 q-8 -6 -14 2 q-6 -10 -14 -2 q-8 -10 -16 0 q-8 -8 -16 2 q-8 -6 -18 4z" fill="#fff6ee"/>
+        </svg>
+        <p class="bun-title">A wild Cinnabon appeared.</p>
+        <p class="bun-sub">On the way home from the gym. As one does.</p>
+        <div class="choice">
+          <button class="btn btn-ghost" id="eatBun" type="button">Eat it</button>
+          <button class="btn btn-main" id="resistBun" type="button">Resist</button>
+        </div>
+        <p class="bun-result" id="bunResult" aria-live="polite"></p>
+      </div>
+      <div class="after" id="gymAfter" hidden>
+        <button class="btn btn-main" data-next="5" type="button">Keep going</button>
+      </div>
+    </section>
+
+    <!-- 5 · cake -->
+    <section class="level" id="lv-cake" data-level="5" hidden>
       <h2 class="display">22 candles</h2>
       <p class="lede">Make a wish. Not a dumb one. Then blow into your phone's mic.</p>
       <div class="cake" id="cake">
@@ -139,12 +197,12 @@
       </div>
       <p class="cake-msg" id="cakeMsg" aria-live="polite"></p>
       <div class="after" id="cakeAfter" hidden>
-        <button class="btn btn-main" data-next="5" type="button">Keep going</button>
+        <button class="btn btn-main" data-next="6" type="button">Keep going</button>
       </div>
     </section>
 
-    <!-- 5 · timeline -->
-    <section class="level" id="lv-time" data-level="5" hidden>
+    <!-- 6 · timeline -->
+    <section class="level" id="lv-time" data-level="6" hidden>
       <h2 class="display">Three years of wishing you</h2>
       <ol class="timeline">
         <li>
@@ -169,12 +227,12 @@
         </li>
       </ol>
       <div class="after">
-        <button class="btn btn-main" data-next="6" type="button">Open the letter</button>
+        <button class="btn btn-main" data-next="7" type="button">Open the letter</button>
       </div>
     </section>
 
-    <!-- 6 · letter -->
-    <section class="level" id="lv-letter" data-level="6" hidden>
+    <!-- 7 · letter -->
+    <section class="level" id="lv-letter" data-level="7" hidden>
       <article class="letter" id="letter">
         <p>Happy birthday Dumbo. 22. Almost expiring now.</p>
         <p>Before you say anything, yes, I'm on time. 12 o'clock, Pakistani 12. Took me three years but I got there. In 2024 I was almost a day late because dates are subjective. In 2025 I was on time but called you a 16-year-old. So this year I made you a whole website to show how much idgaf.</p>
@@ -228,7 +286,7 @@
     <p>Phone seedha karo.<br>This is a portrait birthday.</p>
   </div>
   <div class="rain" id="rain" aria-hidden="true"></div>
-  <button class="sign-cat" id="signCat" type="button" aria-label="A cat holding a sign" hidden><img alt="" /></button>
+  <button class="peeker" id="peeker" type="button" aria-label="A rude cat is peeking in" hidden><img alt="" /></button>
 
   <script type="module" src="/src/main.js"></script>
 </body>
