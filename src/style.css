@@ -273,7 +273,7 @@ h2.display { font-size: clamp(34px, 10vw, 48px); }
 .bubble.show { opacity: 1; transform: none; }
 
 .toast {
-  position: fixed; left: 50%; top: calc(env(safe-area-inset-top) + 58px); z-index: 50;
+  position: fixed; left: 50%; top: calc(env(safe-area-inset-top) + 58px); z-index: 70;
   transform: translateX(-50%); width: min(92vw, 380px);
   padding: 12px 16px 12px 46px; border-radius: 14px;
   background: var(--lantern); color: var(--ink); font-weight: 700; font-size: 15px; line-height: 1.35;
@@ -303,3 +303,32 @@ h2.display { font-size: clamp(34px, 10vw, 48px); }
 }
 
 .redact { display: inline-block; width: 4.2em; height: .9em; vertical-align: -.05em; border-radius: 3px; background: var(--chalk-dim); }
+
+/* ---------- v2: sound, moods, new eggs ---------- */
+.hud-right { display: flex; align-items: center; gap: 12px; }
+.sound-btn { position: relative; width: 38px; height: 38px; padding: 0; border: 0; background: none; }
+.sound-btn img { width: 100%; height: 100%; object-fit: contain; }
+.sound-btn.off img { opacity: .45; filter: grayscale(1); }
+.sound-btn.off::after { content: ''; position: absolute; left: 2px; right: 2px; top: 50%; height: 3px; background: var(--vein); border-radius: 2px; transform: rotate(-35deg); }
+.kuku img { transform-origin: 50% 80%; max-height: 110px; object-fit: contain; }
+.popcat {
+  position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  background: #10162ef2; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); padding: 24px; text-align: center;
+}
+.popcat img { width: min(66vw, 260px); filter: drop-shadow(0 12px 24px #0009); }
+.popcat p { margin: 0; font-family: var(--hand); font-weight: 700; font-size: 30px; line-height: 1.1; max-width: 18ch; }
+.popcat small { font-size: 20px; color: var(--chalk-dim); }
+.sign-cat {
+  position: fixed; left: 0; bottom: calc(env(safe-area-inset-bottom) + 120px); z-index: 34;
+  width: 118px; padding: 0; border: 0; background: none; filter: drop-shadow(0 6px 10px #0008);
+}
+.sign-cat img { width: 100%; display: block; transform: rotate(8deg); }
+#pBrother { position: relative; }
+.gojo-peek {
+  position: absolute; right: 0; bottom: 0; width: 50px; height: 34px; overflow: hidden;
+  padding: 0; border: 0; background: none; transform: rotate(-8deg); transform-origin: 100% 100%;
+}
+.gojo-peek img { width: 50px; display: block; filter: drop-shadow(0 2px 4px #0008); }
+.tl-cat { float: right; width: 84px; margin: -8px 0 6px 8px; filter: drop-shadow(0 6px 10px #0007); }
+.sign-btn { background: none; border: 0; padding: 0; font: inherit; color: inherit; }
+.finale-cat { width: 150px; display: block; margin-bottom: 12px; filter: drop-shadow(0 8px 18px #0008); }

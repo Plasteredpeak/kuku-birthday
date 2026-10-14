@@ -13,7 +13,10 @@
 <body>
   <header class="hud">
     <button class="hud-title" id="hudTitle" type="button">samiya's 22nd</button>
-    <span class="hud-eggs" id="hudEggs" aria-live="polite"><span class="egg-icon" aria-hidden="true"></span><b id="eggCount">0</b>/12</span>
+    <div class="hud-right">
+      <button class="sound-btn" id="soundBtn" type="button" aria-label="Turn sound off"><img id="soundIcon" alt="" /></button>
+      <span class="hud-eggs" id="hudEggs" aria-live="polite"><span class="egg-icon" aria-hidden="true"></span><b id="eggCount">0</b>/15</span>
+    </div>
   </header>
 
   <main id="levels">
@@ -112,6 +115,7 @@
         <p>Ali calls you "Brother" in every argument, so this is basically your life. Eat your chocolate before he gets it.</p>
         <div class="choc" id="choc" aria-label="Chocolate bar"></div>
         <p class="bro-line" id="broLine" aria-live="polite"></p>
+        <button class="gojo-peek" id="gojoPeek" type="button" aria-label="Something blindfolded is hiding here"><img data-cat="gojo" alt="" /></button>
       </article>
 
       <div class="after">
@@ -146,6 +150,7 @@
         <li>
           <span class="tl-year">2024</span>
           <span class="tl-status late">Almost a day late</span>
+          <img class="tl-cat" data-cat="samiya-angry" alt="Angry chibi Samiya" />
           <blockquote>"Happy birthday samiya <span class="redact" aria-label="surname redacted"></span> have a good day ig."</blockquote>
           <p>Defence submitted at the time: "Dates are subjective."</p>
         </li>
@@ -158,6 +163,7 @@
         <li>
           <span class="tl-year">2026</span>
           <span class="tl-status best">On time, Pakistani 12, plus a website</span>
+          <img class="tl-cat" data-cat="flower" alt="Cat holding a flower" />
           <blockquote>You're reading it.</blockquote>
           <p>22 this time. Ali says almost expiring.</p>
         </li>
@@ -186,16 +192,17 @@
         <p>Anyways...</p>
         <p>You're the one who says "khana khalo" when I'm being a dramatic sick man. Who makes me play Silksong just so she can watch, then complains I never watch anything with her. Who sends reels and I pretend I don't watch (I watch all of them). Who misses Hollow Knight more than I do.</p>
         <p>We fight. A lot. Sometimes you think I'm against you. I'm not. I'm just bad at this, and the opposite of what I mean comes out first. But I've never not been on your side. Even when I'm being petty. Especially then, actually.</p>
-        <p>So for 22: I hope uni gets easier, the gym actually works (it won't if you keep eating ice cream hehe), you find a cat that lets you pick it up, you get every Wordle in 2, and you stop thinking nobody remembers your birthday on time.</p>
+        <p>So for 22: I hope uni gets easier, the <span class="w" data-w="gym">gym</span> actually works (it won't if you keep eating ice cream hehe), you find a cat that lets you pick it up, you get every Wordle in 2, and you stop thinking nobody remembers your birthday on time.</p>
         <p>Ok, that's enough. This was cringe. If you screenshot this, I'll deny everything. And this doesn't mean I don't have my issues with you, but it's your birthday so I'll let it slide.</p>
         <p>Happy birthday Samiya. Genuinely.</p>
         <p>Now get lost.<br><span class="aside">(Check the translation guide.)</span></p>
-        <p class="sign">– Ali</p>
+        <p class="sign"><button class="sign-btn" id="sign" type="button">– Ali</button></p>
       </article>
       <div class="after">
         <button class="btn btn-main" id="getLost" type="button">Get lost</button>
       </div>
       <div class="finale" id="finale" hidden>
+        <img class="finale-cat" data-cat="heart" alt="Cat holding a heart" />
         <p class="display finale-big">You're still here.</p>
         <p class="lede">Good. (See: translation guide, line six.)</p>
         <p class="egg-report" id="eggReport"></p>
@@ -221,6 +228,7 @@
     <p>Phone seedha karo.<br>This is a portrait birthday.</p>
   </div>
   <div class="rain" id="rain" aria-hidden="true"></div>
+  <button class="sign-cat" id="signCat" type="button" aria-label="A cat holding a sign" hidden><img alt="" /></button>
 
   <script type="module" src="/src/main.js"></script>
 </body>

@@ -5,8 +5,14 @@ import '@fontsource/atkinson-hyperlegible/latin-700.css'
 import './style.css'
 import { gsap } from 'gsap'
 import confetti from 'canvas-confetti'
-import kukuAngry from './assets/kuku-angry.png'
 import kukuCalm from './assets/kuku-calm.png'
+import { initAudio, playTheme, sfx, isMuted, setMuted } from './audio.js'
+
+const CAT = Object.fromEntries(
+  Object.entries(import.meta.glob('./assets/cats/*.webp', { eager: true, import: 'default' }))
+    .map(([p, url]) => [p.split('/').pop().replace('.webp', ''), url]),
+)
+CAT.calm = kukuCalm
 
 const $ = (s, el = document) => el.querySelector(s)
 const $$ = (s, el = document) => [...el.querySelectorAll(s)]
@@ -18,13 +24,16 @@ const pick = (a) => a[Math.floor(Math.random() * a.length)]
 const BIRTHDAY = Date.UTC(2026, 9, 14, 19, 0, 0)
 const params = new URLSearchParams(location.search)
 const ALI_MODE = params.has('ali')
+const TOTAL_EGGS = 15
 
-$$('.kuku-src').forEach((img) => (img.src = kukuAngry))
-$('#favicon').href = kukuAngry
+$$('.kuku-src').forEach((img) => (img.src = CAT.angry))
+$('#favicon').href = CAT.angry
+$('#soundIcon').src = CAT.music
+$$('img[data-cat]').forEach((img) => (img.src = CAT[img.dataset.cat]))
 
 /* ---------------- state ---------------- */
 const KEY = 'kuku-bday-v1'
-let state = { level: 0, eggs: [], pets: 0, guesses: [], candlesOut: false }
+let state = { level: 0, eggs: [], pets: 0, guesses: [], candlesOut: false, finale: false }
 try {
   if (params.has('reset')) localStorage.removeItem(KEY)
   const saved = JSON.parse(localStorage.getItem(KEY) || 'null')
@@ -32,7 +41,34 @@ try {
 } catch {}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)) } catch {} }
 
-/* ---------------- Kuku ---------------- */
+/* ---------------- audio ---------------- */
+const soundBtn = $('#soundBtn')
+const renderSound = () => {
+  soundBtn.classList.toggle('off', isMuted())
+  soundBtn.setAttribute('aria-label', isMuted() ? 'Turn sound on' : 'Turn sound off')
+}
+renderSound()
+// Android only unlocks audio on a finished tap, so listen for the end of the touch
+;['pointerup', 'touchend', 'click'].forEach((ev) => addEventListener(ev, () => initAudio(), { passive: true }))
+addEventListener('keydown', () => initAudio())
+soundBtn.addEventListener('click', () => {
+  initAudio()
+  setMuted(!isMuted())
+  renderSound()
+  if (!isMuted()) { mood('music', 2600); say('music on. cave vibes.', 2200) }
+  else say('silence. fine.', 1800)
+})
+// every level has its own theme
+const THEME_BY_LEVEL = ['gate', 'wordle', 'cave', 'anime', 'cake', 'time', 'letter']
+const io = new IntersectionObserver((entries) => {
+  for (const e of entries) if (e.isIntersecting) playTheme(THEME_BY_LEVEL[+e.target.dataset.level])
+}, { threshold: 0.35 })
+$$('.level').forEach((l) => io.observe(l))
+playTheme('gate')
+// soft tap sound on every button
+document.addEventListener('click', (e) => { if (e.target.closest('.btn, .clock-gst')) sfx.tap() })
+
+/* ---------------- Kuku + moods ---------------- */
 const bubble = $('#bubble')
 const kuku = $('#kuku')
 const kukuImg = $('#kukuImg')
@@ -45,24 +81,48 @@ function say(text, ms = 3200) {
   if (!reduced) gsap.fromTo(kuku, { y: 0 }, { y: -10, duration: 0.12, yoyo: true, repeat: 1 })
 }
 
+const baseMood = () => (state.finale ? 'heart' : state.pets >= 15 ? 'calm' : 'angry')
+let moodTimer, sleeping = false
+function mood(name, ms = 2400) {
+  clearTimeout(moodTimer)
+  sleeping = name === 'sleep' && !ms
+  if (kukuImg.dataset.mood !== name) {
+    kukuImg.dataset.mood = name
+    kukuImg.src = CAT[name]
+    if (!reduced) gsap.fromTo(kukuImg, { scale: 0.8, rotate: -8 }, { scale: 1, rotate: 0, duration: 0.35, ease: 'back.out(2.5)' })
+  }
+  kuku.classList.toggle('calm', name === 'calm')
+  if (ms) moodTimer = setTimeout(() => mood(baseMood(), 0), ms)
+}
+mood(baseMood(), 0)
+
+// big centre reaction sticker
+function popCat(name, caption, ms = 2600) {
+  const wrap = document.createElement('div')
+  wrap.className = 'popcat'
+  wrap.innerHTML = `<img src="${CAT[name]}" alt=""><p>${caption}</p>`
+  document.body.append(wrap)
+  const close = () => gsap.to(wrap, { opacity: 0, scale: 0.8, duration: 0.25, onComplete: () => wrap.remove() })
+  wrap.addEventListener('click', close)
+  if (reduced) { setTimeout(() => wrap.remove(), ms); return }
+  gsap.fromTo(wrap, { opacity: 0, scale: 0.4, rotate: -12 }, { opacity: 1, scale: 1, rotate: 0, duration: 0.45, ease: 'back.out(2)' })
+  setTimeout(close, ms)
+}
+
 const petLines = [
   "don't touch me", 'noob', '...', 'kya masla hai', 'stop', 'khair hai?', 'pagal ho',
   "i'm not a cat. i'm KUKU", 'hmph', "you're doing it wrong", '...continue', 'ok one more',
   'this is harassment', 'fine',
 ]
-function setCalm(calm) {
-  kukuImg.src = calm ? kukuCalm : kukuAngry
-  kuku.classList.toggle('calm', calm)
-}
-if (state.pets >= 15) setCalm(true)
-
 let pressTimer, longPressed = false
 kuku.addEventListener('pointerdown', () => {
   longPressed = false
   pressTimer = setTimeout(() => {
     longPressed = true
     buzz(60)
-    egg('hold', 'Kuku has been picked up', 'put me DOWN. ...ok 2 more seconds.')
+    mood('buff', 3000)
+    sfx.thud()
+    egg('hold', 'Kuku has been picked up', 'put me DOWN. i go to the gym. look at these.')
   }, 650)
 })
 const cancelPress = () => clearTimeout(pressTimer)
@@ -71,17 +131,24 @@ kuku.addEventListener('pointerleave', cancelPress)
 kuku.addEventListener('contextmenu', (e) => e.preventDefault())
 kuku.addEventListener('click', () => {
   if (longPressed) return
+  if (sleeping) { mood(baseMood(), 0); say('i was SLEEPING.'); sfx.hiss(); return }
   state.pets++
   save()
   buzz(15)
   if (state.pets === 15) {
-    setCalm(true)
+    sfx.meow(true)
+    mood('heart', 2500)
+    setTimeout(() => mood('calm', 0), 2500)
     say('...ok fine. happy birthday 😾', 5000)
     burst(0.85, 0.85)
   } else if (state.pets > 15) {
+    sfx.meow(true)
+    mood(pick(['heart', 'yay', 'flower']), 1800)
     say(pick(['purr. tell no one.', 'ok you can stay', 'happy birthday (quietly)', '😾💗']))
   } else {
+    if (state.pets % 3 === 0) sfx.hiss(); else sfx.meow()
     say(`${pick(petLines)}  (${state.pets}/15)`, 1800)
+    if (!reduced) gsap.fromTo(kukuImg, { rotate: -10 }, { rotate: 0, duration: 0.4, ease: 'elastic.out(1,0.3)' })
   }
 })
 
@@ -89,28 +156,34 @@ kuku.addEventListener('click', () => {
 const EGGS = {
   gst: 'Tapped the GST clock',
   ali12: "Picked Ali's 12",
+  batman: 'Found Batman (it was Ali)',
   hamza: 'Guessed HAMZA in the Wordle',
   hold: 'Long-pressed Kuku',
+  sign: 'Caught the sign cat',
   shake: 'Shook the phone',
   title: 'Poked the title five times',
   born: 'Opened it at 1:30pm, your birth time',
   turn: 'Turned the phone sideways',
   bench: 'Rested at the bench',
   psi: 'Read your own mind five times',
-  idle: 'Went quiet for a minute',
+  gojo: 'Found Gojo',
+  idle: 'Let Kuku fall asleep',
   bro: 'Let your brother steal three pieces',
 }
 const HINTS = {
   gst: 'A clock that does not exist.',
   ali12: 'The wrong answer at the start.',
+  batman: "Poke Ali's clock. Or his name.",
   hamza: 'Guess a name in the Wordle.',
-  hold: "Don't just tap Kuku.",
+  hold: "Don't just tap Kuku. Hold.",
+  sign: 'Someone keeps peeking from the left with a sign.',
   shake: 'Shake things up.',
   title: 'Poke the top-left corner.',
   born: 'Come back at the time you were born.',
   turn: 'Hold your phone the wrong way.',
   bench: 'Sit down somewhere.',
   psi: 'Keep reading your mind.',
+  gojo: 'Something blindfolded is hiding in the anime corner.',
   idle: 'Do nothing for a while.',
   bro: 'Let the brother win.',
 }
@@ -124,9 +197,10 @@ function egg(id, title, line) {
   state.eggs.push(id)
   save()
   renderEggCount()
+  sfx.egg()
   const hud = $('#hudEggs')
   hud.classList.remove('bump'); void hud.offsetWidth; hud.classList.add('bump')
-  toast.innerHTML = `<b>Easter egg ${state.eggs.length}/12</b>${title}`
+  toast.innerHTML = `<b>Easter egg ${state.eggs.length}/${TOTAL_EGGS}</b>${title}`
   toast.hidden = false
   buzz([30, 40, 30])
   if (!reduced) gsap.fromTo(toast, { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3 })
@@ -138,10 +212,12 @@ function egg(id, title, line) {
 const COLORS = ['#ffcf6b', '#ff8fb6', '#eef1ff', '#6aaa64', '#a9b0d6']
 function burst(x = 0.5, y = 0.6, n = 90) {
   if (reduced) return
+  sfx.pop()
   confetti({ particleCount: n, spread: 80, origin: { x, y }, colors: COLORS, scalar: 0.9, disableForReducedMotion: true })
 }
 function bigCelebrate() {
   if (reduced) return
+  sfx.pop(); setTimeout(() => sfx.pop(), 250)
   const end = Date.now() + 1600
   ;(function frame() {
     confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0, y: 0.7 }, colors: COLORS })
@@ -149,6 +225,28 @@ function bigCelebrate() {
     if (Date.now() < end) requestAnimationFrame(frame)
   })()
 }
+
+/* ---------------- sign cat (peeks in from the left) ---------------- */
+const signCat = $('#signCat')
+let signTimer, signShows = 0
+function peekSign(delay = 7000) {
+  clearTimeout(signTimer)
+  signTimer = setTimeout(() => {
+    if (state.eggs.includes('sign') && signShows > 2) return
+    signShows++
+    signCat.querySelector('img').src = signShows % 2 ? CAT['sign-short'] : CAT['sign-gay']
+    signCat.hidden = false
+    gsap.fromTo(signCat, { x: -140, rotate: 12 }, { x: 0, rotate: 0, duration: 0.5, ease: 'back.out(1.6)' })
+    signTimer = setTimeout(hideSign, 5200)
+  }, delay)
+}
+function hideSign() { gsap.to(signCat, { x: -160, duration: 0.35, onComplete: () => (signCat.hidden = true) }) }
+signCat.addEventListener('click', () => {
+  clearTimeout(signTimer)
+  sfx.whoosh()
+  hideSign()
+  egg('sign', 'Caught the sign cat', 'rude. accurate though.')
+})
 
 /* ---------------- level flow ---------------- */
 const levels = $$('.level')
@@ -160,14 +258,15 @@ function unlock(n) {
   if (!reduced) gsap.fromTo(el, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' })
   requestAnimationFrame(() => el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }))
   const intros = {
-    1: 'five letters. you know this one.',
-    2: "it's dark. like your humour.",
-    3: 'weeb section. i allowed it.',
-    4: 'make a wish. not a dumb one.',
-    5: 'history lesson.',
-    6: 'he wrote this himself. i checked.',
+    1: ['five letters. you know this one.', 'eyes'],
+    2: ["it's dark. like your humour.", 'eyes'],
+    3: ['weeb section. i allowed it.', 'music'],
+    4: ['make a wish. not a dumb one.', 'yay'],
+    5: ['history lesson.', 'flower'],
+    6: ['he wrote this himself. i checked.', 'eyes'],
   }
-  if (intros[n]) setTimeout(() => say(intros[n]), 700)
+  if (intros[n]) setTimeout(() => { say(intros[n][0]); mood(intros[n][1], 2600) }, 700)
+  if ([1, 3, 5].includes(n)) peekSign(6000 + Math.random() * 4000)
 }
 $$('[data-next]').forEach((b) => b.addEventListener('click', () => unlock(+b.dataset.next)))
 
@@ -197,12 +296,15 @@ function tick() {
     const wasWaiting = !$('#gateWait').hidden
     $('#gateWait').hidden = true
     $('#gateOpen').hidden = false
-    if (wasWaiting) { bigCelebrate(); buzz([80, 60, 80]); say("it's 12. YOUR 12. happy birthday noob.", 5000) }
+    if (wasWaiting) {
+      bigCelebrate(); buzz([80, 60, 80]); sfx.win(); mood('yay', 5000)
+      say("it's 12. YOUR 12. happy birthday noob.", 5000)
+    }
   }
 
   // birth time easter egg: 1:30pm PKT
   const [h, m] = pkParts.format(now).split(':').map(Number)
-  if (h === 13 && m >= 30 && m < 60 && now.getTime() >= BIRTHDAY - 86400000) {
+  if (h === 13 && m >= 30 && now.getTime() >= BIRTHDAY - 86400000) {
     egg('born', 'You were born right about now', '1:30pm. you were born now-ish. I remember things. sometimes.')
   }
 }
@@ -212,14 +314,32 @@ setInterval(tick, 1000)
 if (!ALI_MODE && Date.now() < BIRTHDAY) setTimeout(() => say('not yet, noob. come back at 12.'), 900)
 else setTimeout(() => say(state.level > 0 ? 'oh. you came back.' : 'hi. i am kuku. i am angry. scroll.'), 900)
 
-$('#clkGST').addEventListener('click', () => egg('gst', 'Found the GST clock', 'I DONT HAVE GST CLOCK'))
+$('#clkGST').addEventListener('click', () => { mood('cry', 2000); egg('gst', 'Found the GST clock', 'I DONT HAVE GST CLOCK') })
 $('#pickAli').addEventListener('click', () => {
   document.body.classList.remove('screen-shake'); void document.body.offsetWidth
   document.body.classList.add('screen-shake')
   buzz(120)
+  sfx.thud()
+  mood('cry', 2600)
+  popCat('samiya-angry', 'you, every time he is late')
   egg('ali12', "Picked Ali's 12", "that's 4 hours late. as usual 😭 try again.")
 })
-$('#pickYou').addEventListener('click', () => { burst(0.5, 0.7); unlock(1) })
+$('#pickYou').addEventListener('click', () => { burst(0.5, 0.7); sfx.win(); mood('yay', 2600); unlock(1) })
+
+// batman: tap Ali's clock three times, or his signature
+function batman() {
+  sfx.batman()
+  buzz([40, 30, 40, 30, 120])
+  popCat('batman', "I'm Batman.<br><small>– Ali Hamza, a.k.a. pp</small>", 3200)
+  egg('batman', 'Found Batman (it was Ali)', "it's just ali in a cape. ignore him.")
+}
+let aliTaps = 0, aliTimer
+$('#clkIE').closest('.clock').addEventListener('click', () => {
+  aliTaps++
+  clearTimeout(aliTimer)
+  aliTimer = setTimeout(() => (aliTaps = 0), 1200)
+  if (aliTaps >= 3) { aliTaps = 0; batman() }
+})
 
 /* ---------------- wordle ---------------- */
 const ANSWER = 'DUMBO'
@@ -276,6 +396,7 @@ function paintRow(r, guess, animate) {
     t.textContent = guess[i]
     const apply = () => {
       t.classList.add(res[i])
+      if (animate) sfx.tile(res[i], i)
       const key = kb.querySelector(`[data-k="${guess[i]}"]`)
       const rank = { miss: 0, near: 1, hit: 2 }
       const prev = ['hit', 'near', 'miss'].find((c) => key.classList.contains(c))
@@ -295,19 +416,20 @@ function renderCurrent() {
 const reactions = {
   IDIOT: 'translation: text me when you get home',
   PAGAL: "translation: he laughed and won't admit it",
-  SAMIYA: 'six letters, birthday girl',
   KUKUS: 'there is only one kuku',
   HAPPY: 'not yet. keep going.',
   CAKES: 'later. focus.',
+  SHORT: 'the sign cat agrees.',
 }
 function press(k) {
   if (done) return
-  if (k === 'BACK') { cur = cur.slice(0, -1); renderCurrent(); return }
+  if (k === 'BACK') { cur = cur.slice(0, -1); renderCurrent(); sfx.back(); return }
   if (k === 'ENTER') {
     if (cur.length < 5) {
       const row = board.children[state.guesses.length]
       row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake')
       msg.textContent = 'five letters, noob'
+      sfx.error()
       buzz(80)
       return
     }
@@ -319,28 +441,30 @@ function press(k) {
     setTimeout(() => afterGuess(g), 1500)
     return
   }
-  if (cur.length < 5) { cur += k; renderCurrent(); buzz(8) }
+  if (cur.length < 5) { cur += k; renderCurrent(); sfx.key(); buzz(8) }
 }
 function afterGuess(g) {
   msg.textContent = ''
-  if (g === 'HAMZA') egg('hamza', 'HAMZA in the Wordle', 'why is HE in your head. on your birthday.')
+  if (g === 'HAMZA') { mood('eyes', 2500); egg('hamza', 'HAMZA in the Wordle', 'why is HE in your head. on your birthday.') }
   else if (reactions[g]) say(reactions[g])
-  if (g === ANSWER) return finishWordle(true)
-  if (state.guesses.length >= 6) return finishWordle(false)
-  const lines = ['hmm', 'no', 'close-ish', 'think about what Ali calls you', 'try again', 'noob']
+  if (g === ANSWER) return finishWordle(true, true)
+  if (state.guesses.length >= 6) return finishWordle(false, true)
+  const lines = ['hmm', 'no', 'close-ish', 'try again', 'noob']
   msg.textContent = state.guesses.length >= 3 ? 'hint: what does Ali call you?' : pick(lines)
 }
 const tries = () => state.guesses.indexOf(ANSWER) + 1
-function finishWordle(won) {
+function finishWordle(won, live = false) {
   done = true
   if (won) {
     const n = tries()
     msg.textContent = n <= 2 ? `In ${n}. Wordle in 2, as promised.` : `DUMBO. Obviously. ${n}/6.`
-    say(n <= 2 ? 'ok that was impressive. noob.' : 'it was always going to be DUMBO.')
-    burst(0.5, 0.5)
+    if (live) {
+      say(n <= 2 ? 'ok that was impressive. noob.' : 'it was always going to be DUMBO.')
+      mood('yay', 3000); sfx.win(); burst(0.5, 0.5)
+    }
   } else {
     msg.textContent = "It was DUMBO. It's always DUMBO."
-    say('X/6. translation: he still thinks you are smart.')
+    if (live) { say('X/6. translation: he still thinks you are smart.'); mood('cry', 3000); sfx.lose() }
   }
   $('#wordleAfter').hidden = false
 }
@@ -352,14 +476,13 @@ $('#copyGrid').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(text); say('copied. send it to him.') }
   catch { say("couldn't copy. screenshot it instead.") }
 })
-// restore
 state.guesses.forEach((g, i) => paintRow(i, g, false))
 if (state.guesses.includes(ANSWER) || state.guesses.length >= 6) finishWordle(state.guesses.includes(ANSWER))
 
 /* ---------------- cave ---------------- */
 const MEMORIES = [
   { when: 'Sep 2025', q: '"PLAY SILKSONG"', t: 'You, in all caps. So I played, and you watched. You still say I never do anything with you.' },
-  { when: 'Every month since', q: '"when will you play hollow knight"', t: "And then last month: \"i miss hollow knight\". Same, honestly." },
+  { when: 'Every month since', q: '"when will you play hollow knight"', t: 'And then last month: "i miss hollow knight". Same, honestly.' },
   { when: 'Aug 2025', q: '"WE CAN WATCH SUZUME"', t: 'Also all caps. Then in April, me: "You couldn\'t even decide what to watch." Both true.' },
   { when: 'Jul 2026', q: '"I tried cheesecake for the first time aj"', t: 'Twenty-one years without cheesecake. I said "I love cheese cake" and I stand by it.' },
   { when: 'Sep 2026', q: '"khana khalo"', t: "Your answer to me being tired, sick, dramatic or all three. It works. Don't tell anyone." },
@@ -385,6 +508,7 @@ MEMORIES.forEach((m, i) => {
 })
 function geoBurst(el) {
   if (reduced) return
+  sfx.geo()
   const r = el.getBoundingClientRect()
   for (let i = 0; i < 8; i++) {
     const g = document.createElement('span')
@@ -402,22 +526,26 @@ function geoBurst(el) {
 function lightLantern(i, b) {
   const m = MEMORIES[i]
   $('#memory').innerHTML = `<small>${m.when}</small><q>${m.q}</q>${m.t}`
+  sfx.lantern(i)
   if (!lit.has(i)) { lit.add(i); b.classList.add('lit'); geoBurst(b); buzz(20) }
   if (lit.size === MEMORIES.length && $('#benchWrap').hidden) {
     $('#benchWrap').hidden = false
+    mood('eyes', 2500)
     say('a bench. sit. you look tired.')
   }
 }
 $('#restBench').addEventListener('click', () => {
+  sfx.bench()
+  mood('sleep', 2600)
   egg('bench', 'Rested at the bench', 'progress saved. unlike your sleep schedule.')
-  unlock(3)
+  setTimeout(() => unlock(3), 900)
 })
 
 /* ---------------- anime ---------------- */
 const THOUGHTS = [
   'i want chocolate', 'i miss hollow knight', 'i want to eat', 'wanna watch', 'PLAY SILKSONG',
   'aaaaaaa idk', 'should I eat', 'heuehueehue', 'I DONT HAVE GST CLOCK', 'hamza dont',
-  'thankuthanku', 'ice cream?', 'meri birthday aj hai', 'istg', 'pagal aurat',
+  'thankuthanku', 'ice cream?', 'meri birthday aj hai', 'istg', 'pagal aurat', 'gojo is so pretty',
 ]
 let psiCount = 0, lastThought = ''
 $('#psiBtn').addEventListener('click', () => {
@@ -427,6 +555,8 @@ $('#psiBtn').addEventListener('click', () => {
   $('#thought').textContent = `"${t}"`
   psiCount++
   buzz(10)
+  sfx.shimmer()
+  mood('eyes', 1500)
   if (!reduced) gsap.fromTo('#psiBtn', { rotate: -10 }, { rotate: 0, duration: 0.4, ease: 'elastic.out(1,0.4)' })
   if (psiCount === 5) egg('psi', 'Read your own mind five times', 'psychic diagnosis: mostly food.')
 })
@@ -439,7 +569,15 @@ $('#liftCloche').addEventListener('click', () => {
   $('#butlerLine').textContent = clocheUp
     ? 'Cheesecake, my lady. If I couldn\'t manage this much, what kind of butler would I be?'
     : 'Yes, my lady.'
-  if (clocheUp) { burst(0.5, 0.55, 40); buzz(20) }
+  if (clocheUp) { sfx.shimmer(); burst(0.5, 0.55, 40); buzz(20); mood('yay', 2000) }
+})
+
+// gojo, hiding behind the brother panel
+$('#gojoPeek').addEventListener('click', () => {
+  sfx.domain()
+  buzz([20, 40, 20, 40, 80])
+  popCat('gojo', 'Throughout heaven and earth,<br>you alone are the birthday one.', 3400)
+  egg('gojo', 'Found Gojo', "he's cute. i'm cuter. don't answer that.")
 })
 
 const choc = $('#choc')
@@ -453,13 +591,15 @@ for (let i = 0; i < 12; i++) {
 }
 function eatPiece(p) {
   if (p.classList.contains('gone')) return
-  p.classList.add('gone'); eaten++; buzz(10)
+  p.classList.add('gone'); eaten++; buzz(10); sfx.crunch()
   const left = $$('button:not(.gone)', choc)
   if (left.length && Math.random() < 0.45) {
     const s = pick(left)
     setTimeout(() => {
       s.classList.add('gone'); stolen++
-      $('#broLine').textContent = pick(['brother stole one 😾', 'BROTHER.', 'he took another'])
+      sfx.whoosh()
+      mood('cry', 1500)
+      $('#broLine').textContent = pick(['brother stole one 😾', 'BROTHER.', 'he took another', 'gone. he is chewing loudly.'])
       if (stolen === 3) egg('bro', 'Brother stole three pieces', 'you let him win. very big sister of you.')
     }, 250)
   } else {
@@ -482,6 +622,7 @@ for (let i = 0; i < 22; i++) {
 function blowOne(c) {
   if (c.classList.contains('out')) return
   c.classList.add('out')
+  sfx.blow()
   if (!$$('.candle:not(.out)').length) candlesDone()
 }
 let micStream, micRaf
@@ -491,6 +632,8 @@ function candlesDone() {
   stopMic()
   $('#cakeMsg').textContent = 'Happy 22nd, Samiya.'
   say('wish made. i hope it was not dumb.')
+  mood('yay', 4000)
+  sfx.win()
   bigCelebrate(); buzz([60, 40, 60, 40, 120])
   $('#cakeAfter').hidden = false
 }
@@ -503,10 +646,11 @@ $('#blowBtn').addEventListener('click', async () => {
   try {
     micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false } })
   } catch {
-    $('#cakeMsg').textContent = "No mic. Tap the candles to blow them out instead."
+    $('#cakeMsg').textContent = 'No mic. Tap the candles to blow them out instead.'
     return
   }
   $('#cakeMsg').textContent = 'Blow!'
+  mood('eyes', 3000)
   const ctx = new (window.AudioContext || window.webkitAudioContext)()
   const an = ctx.createAnalyser()
   an.fftSize = 512
@@ -537,53 +681,65 @@ $('#tapBlow').addEventListener('click', () => {
 
 /* ---------------- letter ---------------- */
 const WORDS = {
-  noob: 'you did better than me and I\'m coping',
+  noob: "you did better than me and I'm coping",
   idiot: 'text me when you get home',
   pagal: "I laughed out loud and I'm not admitting it",
 }
-$$('.letter .w').forEach((w) => w.addEventListener('click', () => say(`"${w.textContent}" = ${WORDS[w.dataset.w]}`, 4000)))
+$$('.letter .w').forEach((w) => w.addEventListener('click', () => {
+  if (w.dataset.w === 'gym') { mood('buff', 2600); sfx.thud(); say('the gym works. look at me.'); return }
+  mood('eyes', 2000)
+  say(`"${w.textContent}" = ${WORDS[w.dataset.w]}`, 4000)
+}))
+$('#sign').addEventListener('click', batman)
 
 $('#getLost').addEventListener('click', () => {
   document.body.classList.remove('screen-shake'); void document.body.offsetWidth
   document.body.classList.add('screen-shake')
   buzz([100, 50, 100])
+  sfx.whoosh()
+  mood('zoom', 0)
+  say('fine. bye.', 1200)
+  if (!reduced) gsap.to(kuku, { x: innerWidth, duration: 0.5, ease: 'power2.in' })
   setTimeout(() => {
+    state.finale = true; save()
     $('#finale').hidden = false
     $('#getLost').parentElement.hidden = true
     renderFinale()
     bigCelebrate()
-    catRain(18)
+    catRain(20)
     $('#finale').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
-    setCalm(true)
-    say("you didn't go. good.", 5000)
-  }, 500)
+    mood('heart', 0)
+    if (!reduced) gsap.fromTo(kuku, { x: innerWidth }, { x: 0, duration: 0.6, ease: 'back.out(1.4)' })
+    sfx.meow(true)
+    say("...i came back. you didn't go either. good.", 5000)
+  }, 1300)
 })
 function renderFinale() {
   const n = state.eggs.length
-  $('#eggReport').textContent = n === 12
-    ? 'All 12 easter eggs. Noob. (See translation guide.)'
-    : `You found ${n} of 12 easter eggs. The rest are still hiding.`
+  $('#eggReport').textContent = n === TOTAL_EGGS
+    ? `All ${TOTAL_EGGS} easter eggs, one for every day of October so far. Noob. (See translation guide.)`
+    : `You found ${n} of ${TOTAL_EGGS} easter eggs. The rest are still hiding.`
   $('#eggList').innerHTML = Object.keys(EGGS).map((id) => {
     const found = state.eggs.includes(id)
     return `<li class="${found ? 'found' : ''}">${found ? EGGS[id] : `Hint: ${HINTS[id]}`}</li>`
   }).join('')
 }
 $('#replay').addEventListener('click', () => {
-  const keepEggs = state.eggs
-  state = { level: 0, eggs: keepEggs, pets: state.pets, guesses: [], candlesOut: false }
+  state = { level: 0, eggs: state.eggs, pets: state.pets, guesses: [], candlesOut: false, finale: false }
   save()
   location.href = location.pathname + (ALI_MODE ? '?ali' : '')
 })
 
 /* ---------------- global easter eggs ---------------- */
+const RAIN_CATS = ['angry', 'calm', 'heart', 'yay', 'flower', 'eyes', 'music', 'sleep', 'cry', 'buff', 'zoom']
 function catRain(n = 26) {
   if (reduced) return
   const rain = $('#rain')
   for (let i = 0; i < n; i++) {
     const img = document.createElement('img')
-    img.src = Math.random() < 0.5 ? kukuAngry : kukuCalm
-    img.style.left = `${Math.random() * 92}vw`
-    img.style.width = `${40 + Math.random() * 50}px`
+    img.src = CAT[pick(RAIN_CATS)]
+    img.style.left = `${Math.random() * 90}vw`
+    img.style.width = `${44 + Math.random() * 50}px`
     rain.append(img)
     gsap.to(img, {
       y: innerHeight + 160, rotation: (Math.random() - 0.5) * 540,
@@ -593,7 +749,6 @@ function catRain(n = 26) {
   }
 }
 
-// shake
 let lastShake = 0
 window.addEventListener('devicemotion', (e) => {
   const a = e.accelerationIncludingGravity || e.acceleration
@@ -602,31 +757,34 @@ window.addEventListener('devicemotion', (e) => {
   if (mag > 28 && Date.now() - lastShake > 2500) {
     lastShake = Date.now()
     catRain()
+    sfx.meow(); setTimeout(() => sfx.meow(true), 200)
     buzz(60)
+    mood('cry', 2000)
     egg('shake', 'Shook the phone', 'it is raining kukus. happy now?')
   }
 })
 
-// title x5
 let titleTaps = 0, titleTimer
 $('#hudTitle').addEventListener('click', () => {
   titleTaps++
+  sfx.tap()
   clearTimeout(titleTimer)
   titleTimer = setTimeout(() => (titleTaps = 0), 1500)
-  if (titleTaps >= 5) { titleTaps = 0; egg('title', 'Poked the title five times', "stop poking things. you're 22.") }
+  if (titleTaps >= 5) { titleTaps = 0; mood('eyes', 2000); egg('title', 'Poked the title five times', "stop poking things. you're 22.") }
 })
 
-// landscape
 const land = matchMedia('(orientation: landscape) and (max-height: 500px)')
 const onLand = () => { if (land.matches) egg('turn', 'Turned the phone sideways', 'phone seedha karo.') }
 land.addEventListener?.('change', onLand)
 onLand()
 
-// idle
 let idleTimer
 const resetIdle = () => {
   clearTimeout(idleTimer)
-  idleTimer = setTimeout(() => egg('idle', 'Went quiet for a minute', 'khana khalo.'), 60000)
+  idleTimer = setTimeout(() => {
+    mood('sleep', 0)
+    egg('idle', 'Let Kuku fall asleep', 'zzz... khana khalo... zzz')
+  }, 45000)
 }
 ;['pointerdown', 'keydown', 'scroll'].forEach((ev) => addEventListener(ev, resetIdle, { passive: true }))
 resetIdle()
@@ -634,3 +792,4 @@ resetIdle()
 /* ---------------- boot ---------------- */
 showUpTo(state.level)
 if (params.has('all')) { state.level = 6; showUpTo(6) }
+if (state.finale) { $('#finale').hidden = false; $('#getLost').parentElement.hidden = true; renderFinale() }
