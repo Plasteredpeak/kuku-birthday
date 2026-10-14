@@ -8,7 +8,7 @@ import confetti from 'canvas-confetti'
 import kukuCalm from './assets/kuku-calm.png'
 import { initAudio, playTheme, sfx, isMuted, setMuted } from './audio.js'
 import { createBackground } from './bg.js'
-import { createBook, TOTAL as BOOK_TOTAL } from './book.js'
+import { createBook, TOTAL as BOOK_TOTAL, STICKERS, QUOTES } from './book.js'
 import { createWrapped } from './wrapped.js'
 import { drawCard } from './card.js'
 
@@ -249,6 +249,16 @@ const HINTS = {
 }
 TOTAL_EGGS = Object.keys(EGGS).length
 $('#eggTotal').textContent = TOTAL_EGGS
+// ?ali&complete: everything unlocked, for Ali to preview the end state (sticker book last page etc.)
+if (ALI_MODE && params.has('complete')) {
+  Object.assign(state, {
+    level: 8, revealed: true, introduced: true, finale: true, pets: 20, gym: 'resisted',
+    eggs: Object.keys(EGGS), stickers: STICKERS.map((s) => s.id), quotes: QUOTES.map((q) => q.id),
+    bookDone: true, bookSeen: 0, guesses: ['DUMBO'], wordleBest: 1, candlesOut: true,
+    wrapped: { card: 8, max: 8, done: true, answers: { texts: 0, voice: 0, emoji: 0, insults: 1, idk: 0, toilet: 2 } },
+  })
+  save()
+}
 book = createBook({
   CAT, state, save, sfx, gsap, reduced, eggs: { EGGS, HINTS },
   onComplete: () => setTimeout(() => {
