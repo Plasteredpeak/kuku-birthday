@@ -36,7 +36,7 @@ $$('img[data-cat]').forEach((img) => (img.src = CAT[img.dataset.cat]))
 
 /* ---------------- state ---------------- */
 const KEY = 'kuku-bday-v1'
-let state = { level: 0, eggs: [], pets: 0, guesses: [], candlesOut: false, finale: false, revealed: false, gym: null }
+let state = { level: 0, eggs: [], pets: 0, guesses: [], candlesOut: false, finale: false, revealed: false, gym: null, introduced: false }
 try {
   if (params.has('reset')) localStorage.removeItem(KEY)
   const saved = JSON.parse(localStorage.getItem(KEY) || 'null')
@@ -75,7 +75,8 @@ const bubble = $('#bubble')
 const kuku = $('#kuku')
 const kukuImg = $('#kukuImg')
 let bubbleTimer
-function say(text, ms = 3200) {
+function say(text, ms = 4500) {
+  ms = Math.max(ms, 3500)
   bubble.textContent = text
   bubble.classList.add('show')
   clearTimeout(bubbleTimer)
@@ -94,7 +95,8 @@ function mood(name, ms = 2400) {
     if (!reduced) gsap.fromTo(kukuImg, { scale: 0.8, rotate: -8 }, { scale: 1, rotate: 0, duration: 0.35, ease: 'back.out(2.5)' })
   }
   kuku.classList.toggle('calm', name === 'calm')
-  if (ms) moodTimer = setTimeout(() => mood(baseMood(), 0), ms)
+  // reactions linger so she actually sees them
+  if (ms) moodTimer = setTimeout(() => mood(baseMood(), 0), Math.max(ms * 2, 4500))
 }
 mood(baseMood(), 0)
 
@@ -122,6 +124,7 @@ kuku.addEventListener('pointerdown', () => {
   pressTimer = setTimeout(() => {
     longPressed = true
     buzz(60)
+    if (!state.revealed) { sfx.hiss(); say('no picking me up until 12.'); return }
     mood('buff', 3000)
     sfx.thud()
     egg('hold', 'Kuku has been picked up', 'put me DOWN. i go to the gym. look at these.')
@@ -133,6 +136,7 @@ kuku.addEventListener('pointerleave', cancelPress)
 kuku.addEventListener('contextmenu', (e) => e.preventDefault())
 kuku.addEventListener('click', () => {
   if (longPressed) return
+  if (!state.revealed) return waitingTap()
   if (sleeping) { mood(baseMood(), 0); say('i was SLEEPING.'); sfx.hiss(); return }
   state.pets++
   save()
@@ -149,10 +153,68 @@ kuku.addEventListener('click', () => {
     say(pick(['purr. tell no one.', 'ok you can stay', 'happy birthday (quietly)', '😾💗']))
   } else {
     if (state.pets % 3 === 0) sfx.hiss(); else sfx.meow()
-    say(`${pick(petLines)}  (${state.pets}/15)`, 1800)
+    say(`${pick(petLines)}  (${state.pets}/15)`, 3500)
     if (!reduced) gsap.fromTo(kukuImg, { rotate: -10 }, { rotate: 0, duration: 0.4, ease: 'elastic.out(1,0.3)' })
   }
 })
+
+/* ---------------- Kuku before 12: patience, then sleep ---------------- */
+const WAIT_LINES = [
+  "don't get hasty. wait.", 'have some patience.', "it's not 12 yet.", 'asking won\'t make it faster.',
+  "you've been asking him for an hour. he told me.", 'Pakistani 12. look at the clock.', 'tap tap tap. no.',
+  "patience. you've heard of it?", "i'm getting sleepy from all this waiting…",
+]
+const SLEEPY_LINES = [
+  "it's not time yet. don't wake me up.", 'zzz… still not 12…', 'five more minutes…', "DON'T wake me up.",
+  'wake me at 12. YOUR 12.', 'zzz… cinnabon… zzz', 'shhh. sleeping. guarding. both.',
+]
+let waitTaps = 0, sleepTaps = 0, introUntil = 0
+function waitingTap() {
+  buzz(15)
+  if (Date.now() < introUntil) { sfx.hiss(); say('shh. let me finish introducing myself.', 3500); return }
+  stopQueue()
+  if (sleeping) {
+    sfx.hiss()
+    say(SLEEPY_LINES[sleepTaps++ % SLEEPY_LINES.length])
+    if (!reduced) gsap.fromTo(kukuImg, { x: -4 }, { x: 0, duration: 0.4, ease: 'elastic.out(1,0.2)' })
+    return
+  }
+  sfx.meow()
+  if (waitTaps < WAIT_LINES.length) {
+    say(WAIT_LINES[waitTaps++])
+    mood(waitTaps % 3 === 0 ? 'cry' : 'eyes', 1500)
+    if (!reduced) gsap.fromTo(kukuImg, { rotate: -10 }, { rotate: 0, duration: 0.4, ease: 'elastic.out(1,0.3)' })
+  } else {
+    fallAsleep("ok. i'm going to sleep. wake me at 12. (don't.)")
+  }
+}
+function fallAsleep(line) {
+  clearTimeout(moodTimer)
+  mood('sleep', 0)
+  if (line) say(line, 6000)
+}
+
+// Kuku explains who Kuku is, one bubble at a time
+let queueToken = 0
+function sayQueue(lines, gap = 4300) {
+  const token = ++queueToken
+  lines.forEach((l, i) => setTimeout(() => { if (token === queueToken) say(l, gap + 400) }, i * gap))
+  return lines.length * gap
+}
+function stopQueue() { queueToken++ }
+function introduceKuku(after) {
+  state.introduced = true; save()
+  mood('eyes', 0)
+  const ms = sayQueue([
+    "hi. i'm Kuku.",
+    'Kuku is ME. the angry cat down here. not you.',
+    "you're Samiya. the birthday one. i'm the mascot.",
+    'being angry is my whole personality.',
+    ...after,
+  ])
+  introUntil = Date.now() + ms
+  setTimeout(() => { if (!sleeping && kukuImg.dataset.mood === 'eyes') mood(baseMood(), 0) }, ms)
+}
 
 /* ---------------- eggs ---------------- */
 const EGGS = {
@@ -784,6 +846,7 @@ let idleTimer
 const resetIdle = () => {
   clearTimeout(idleTimer)
   idleTimer = setTimeout(() => {
+    if (!state.revealed) return fallAsleep('zzz… wake me at 12…')
     mood('sleep', 0)
     egg('idle', 'Let Kuku fall asleep', 'zzz... khana khalo... zzz')
   }, 45000)
@@ -861,7 +924,7 @@ if (state.gym) {
 
 /* ---------------- intro loader ---------------- */
 const LOADER_LINES = [
-  'waking up Kuku…', 'Kuku woke up angry', 'teaching cats to hold signs', 'hiding 15 easter eggs',
+  'waking up Kuku (the cat, not you)…', 'Kuku woke up angry', 'teaching cats to hold signs', 'hiding 15 easter eggs',
   'calibrating sarcasm', 'setting the clock to Pakistani 12', 'removing Ali\'s excuses',
   'tuning the music box', 'buying a Cinnabon', 'almost there, noob',
 ]
@@ -978,7 +1041,16 @@ function openStage() {
     tease.style.opacity = 0
     setTimeout(() => { tease.textContent = TEASES[ti]; tease.style.opacity = 1 }, 400)
   }, 6500)
-  setTimeout(() => say(Date.now() >= TARGET ? 'oh. it is time.' : 'not yet, noob. wait with me.'), 600)
+  const ready = Date.now() >= TARGET
+  setTimeout(() => {
+    if (!state.introduced) {
+      introduceKuku(ready
+        ? ['my job was guarding your surprise until 12.', 'oh. it already is 12. go on then.']
+        : ['my job: guarding your surprise until 12. Pakistani 12.', "so we wait. together. don't touch me."])
+    } else {
+      say(ready ? 'oh. it is time.' : 'not yet, noob. wait with me.')
+    }
+  }, 700)
   const update = () => {
     const s = Math.max(0, Math.ceil((TARGET - Date.now()) / 1000))
     setDigit('#cdH', pad2(Math.floor(s / 3600)))
@@ -991,6 +1063,7 @@ function openStage() {
 }
 function showRevealButton() {
   revealShown = true
+  stopQueue()
   $('#stageKicker').textContent = "It's 12. Your 12."
   $('#tease').textContent = 'Go on then.'
   $('#tease').style.opacity = 1
@@ -999,8 +1072,9 @@ function showRevealButton() {
   burst(0.5, 0.45, 70)
   sfx.win()
   buzz([80, 60, 80])
+  const wasAsleep = sleeping
   mood('yay', 0)
-  say('it is time. press it. PRESS IT.', 5000)
+  say(wasAsleep ? "I'M AWAKE. it's 12. press it. PRESS IT." : 'it is time. press it. PRESS IT.', 6000)
 }
 $('#revealBtn').addEventListener('click', () => {
   clearInterval(stageTimer); clearInterval(teaseTimer)
@@ -1032,7 +1106,8 @@ function enterSite(firstTime = false) {
     mood('yay', 4000)
     say("happy birthday noob. it's 12. YOUR 12.", 5000)
   } else {
-    say(state.level > 0 ? 'oh. you came back.' : 'hi. i am kuku. i am angry. scroll.')
+    if (!state.introduced) introduceKuku(['scroll. i will be here. judging.'])
+    else say(state.level > 0 ? 'oh. you came back.' : 'hi again. still angry. scroll.')
   }
   schedulePeek(9000, 16000)
 }

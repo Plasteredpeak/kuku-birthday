@@ -33,6 +33,10 @@ Progress is saved in the browser (localStorage), so if she closes the tab she'll
    - kuku clouds: faded stickers floating up (Wordle loop)
    - aurora: drifting green, blue and pink light (music-box waltz)
 
+   **Kuku introduces herself** the first time, one bubble at a time: "hi. i'm Kuku." → "Kuku is ME. the angry cat down here. not you." → "you're Samiya. the birthday one. i'm the mascot." → "being angry is my whole personality." → "my job: guarding your surprise until 12. Pakistani 12." → "so we wait. together. don't touch me." Tapping her mid-intro gets "shh. let me finish introducing myself." The intro keeps going.
+
+   **Tapping Kuku before 12** doesn't count towards the 15 pets. She goes through: "don't get hasty. wait." → "have some patience." → "it's not 12 yet." → "asking won't make it faster." → "you've been asking him for an hour. he told me." → "Pakistani 12. look at the clock." → "tap tap tap. no." → "patience. you've heard of it?" → "i'm getting sleepy from all this waiting…". Then she **falls asleep** ("wake me at 12. (don't.)"). Tapping her while asleep cycles: "it's not time yet. don't wake me up." / "zzz… still not 12…" / "five more minutes…" / "DON'T wake me up." / "zzz… cinnabon… zzz". She also falls asleep after 45 seconds of no taps. Long-pressing her before 12 gets "no picking me up until 12." At 12 she wakes up yelling "I'M AWAKE. it's 12. press it. PRESS IT."
+
    Tapping the scene name at the bottom skips to the next scene. Teaser lines rotate under the timer. Only Kuku (she can be petted) and the sound button are visible. Nothing else on the site shows, and easter eggs can't be collected yet.
 3. **Reveal.** At 00:00:00 the heading changes to "It's 12. Your 12.", confetti fires and an **Open your surprise** button appears. Tapping it zooms and flashes white, then the site opens with confetti, a cat rain and Kuku saying "happy birthday noob. it's 12. YOUR 12."
 
@@ -78,7 +82,7 @@ Each one shows a yellow toast ("Easter egg n/15"), plays a jingle, buzzes the ph
 | 15 | Brother (`bro`) | In the chocolate bar, keep eating until the **brother has stolen 3 pieces** (each bite has a 45% chance he steals one) | Kuku: "you let him win. very big sister of you." | Let the brother win. |
 
 ### Other secrets (not counted as eggs)
-- **Pet Kuku 15 times** (15 for the 15th). She counts "(n/15)" with grumpy lines, then gives in: heart Kuku, "...ok fine. happy birthday 😾". From then on she stays calm and blushes. Extra pets after that get purrs.
+- **Pet Kuku 15 times** (15 for the 15th). This only counts after the reveal. She counts "(n/15)" with grumpy lines, then gives in: heart Kuku, "...ok fine. happy birthday 😾". From then on she stays calm and blushes. Extra pets after that get purrs.
 - **Wordle words with replies:** IDIOT ("translation: text me when you get home"), PAGAL, SHORT ("the sign cat agrees"), KUKUS, HAPPY, CAKES.
 - **Wordle:** solving it in 1 or 2 gets "Wordle in 2, as promised", a callback to the letter.
 - **Letter:** tap the red words **noob / idiot / pagal** for their translation. Tap **gym** for buff Kuku.
@@ -89,7 +93,7 @@ Each one shows a yellow toast ("Easter egg n/15"), plays a jingle, buzzes the ph
 
 ## Kuku's moods
 
-Kuku (bottom right) switches stickers depending on what's happening, then goes back to her base mood.
+Kuku (bottom right) switches stickers depending on what's happening, then goes back to her base mood. Reactions stay on screen for at least 4.5 seconds and speech bubbles for at least 3.5 seconds, so they don't flash past. If she hasn't been introduced yet when the site opens (for example on a visit after 12 that skips the countdown), she does her intro then.
 
 | Mood | Sticker | When |
 |---|---|---|
