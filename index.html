@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#10162e" />
+  <title>Samiya's 22nd</title>
+  <meta name="description" content="A small, grumpy website for Samiya's 22nd birthday." />
+  <meta property="og:title" content="Samiya's 22nd" />
+  <meta property="og:description" content="Kuku has a message for you. Kuku is not happy about it." />
+  <link rel="icon" id="favicon" href="data:," />
+</head>
+<body>
+  <header class="hud">
+    <button class="hud-title" id="hudTitle" type="button">samiya's 22nd</button>
+    <span class="hud-eggs" id="hudEggs" aria-live="polite"><span class="egg-icon" aria-hidden="true"></span><b id="eggCount">0</b>/12</span>
+  </header>
+
+  <main id="levels">
+    <!-- 0 · gate -->
+    <section class="level" id="lv-gate" data-level="0">
+      <div class="clocks">
+        <div class="clock">
+          <span class="clock-place">Ali (Ireland)</span>
+          <span class="clock-time" id="clkIE">--:--</span>
+        </div>
+        <div class="clock clock-you">
+          <span class="clock-place">You (Pakistan)</span>
+          <span class="clock-time" id="clkPK">--:--</span>
+        </div>
+        <button class="clock clock-gst" id="clkGST" type="button">
+          <span class="clock-place">GST</span>
+          <span class="clock-time" id="clkGSTt">??:??</span>
+        </button>
+      </div>
+
+      <div id="gateWait" class="gate-wait" hidden>
+        <h1 class="display">Not yet.</h1>
+        <p class="lede">This opens at 12. Your 12. Pakistani 12. Kuku checked.</p>
+        <div class="countdown" id="countdown" aria-live="polite">--:--:--</div>
+      </div>
+
+      <div id="gateOpen" class="gate-open" hidden>
+        <h1 class="display">Merey 12 ya apkay 12?</h1>
+        <p class="lede">Pick whose midnight counts. Choose carefully, this has been a three-year argument.</p>
+        <div class="choice">
+          <button class="btn btn-ghost" id="pickAli" type="button">Ali's 12</button>
+          <button class="btn btn-main" id="pickYou" type="button">My 12, obviously</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1 · wordle -->
+    <section class="level" id="lv-wordle" data-level="1" hidden>
+      <h2 class="display">Today's Wordle</h2>
+      <p class="lede">You do one every day. This one is about you. Five letters, six tries.</p>
+      <div class="board" id="board" aria-label="Wordle board"></div>
+      <p class="wordle-msg" id="wordleMsg" aria-live="polite"></p>
+      <div class="keyboard" id="keyboard"></div>
+      <div class="after" id="wordleAfter" hidden>
+        <button class="btn btn-ghost" id="copyGrid" type="button">Copy my result</button>
+        <button class="btn btn-main" data-next="2" type="button">Keep going</button>
+      </div>
+    </section>
+
+    <!-- 2 · cave -->
+    <section class="level level-cave" id="lv-cave" data-level="2" hidden>
+      <h2 class="display">The cave of things you made me do</h2>
+      <p class="lede">It's dark down here. Tap the lanterns.</p>
+      <div class="lanterns" id="lanterns"></div>
+      <div class="memory" id="memory" aria-live="polite"></div>
+      <div class="bench-wrap" id="benchWrap" hidden>
+        <svg class="bench" viewBox="0 0 160 70" aria-hidden="true">
+          <path d="M10 30 Q80 18 150 30" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+          <path d="M14 42 L146 42" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+          <path d="M28 42 L22 66 M132 42 L138 66 M30 30 L30 42 M130 30 L130 42 M80 22 L80 42" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+        <button class="btn btn-main" id="restBench" type="button">Rest at the bench</button>
+      </div>
+    </section>
+
+    <!-- 3 · anime -->
+    <section class="level" id="lv-anime" data-level="3" hidden>
+      <h2 class="display">Anime corner</h2>
+      <p class="lede">Three shows you made me watch, or tried to.</p>
+
+      <article class="panel" id="pSaiki">
+        <h3>Saiki K.</h3>
+        <p>Psychic powers, used responsibly. Tap the Ψ to read your mind.</p>
+        <button class="psi" id="psiBtn" type="button" aria-label="Read Samiya's mind">Ψ</button>
+        <p class="thought" id="thought" aria-live="polite"></p>
+      </article>
+
+      <article class="panel" id="pButler">
+        <h3>Black Butler</h3>
+        <p>Your birthday dessert has been prepared.</p>
+        <div class="cloche-stage">
+          <div class="dessert" id="dessert" aria-hidden="true">🍰</div>
+          <svg class="cloche" id="cloche" viewBox="0 0 200 120" aria-hidden="true">
+            <path d="M20 100 Q20 20 100 18 Q180 20 180 100 Z" fill="#c9cfe6" stroke="#eef1ff" stroke-width="3"/>
+            <path d="M40 92 Q44 40 100 32" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+            <circle cx="100" cy="14" r="9" fill="#c9cfe6" stroke="#eef1ff" stroke-width="3"/>
+            <rect x="8" y="98" width="184" height="10" rx="5" fill="#a9b0d6"/>
+          </svg>
+        </div>
+        <button class="btn btn-ghost" id="liftCloche" type="button">Lift the cover</button>
+        <p class="butler-line" id="butlerLine" aria-live="polite"></p>
+      </article>
+
+      <article class="panel" id="pBrother">
+        <h3>Take My Brother Away</h3>
+        <p>Ali calls you "Brother" in every argument, so this is basically your life. Eat your chocolate before he gets it.</p>
+        <div class="choc" id="choc" aria-label="Chocolate bar"></div>
+        <p class="bro-line" id="broLine" aria-live="polite"></p>
+      </article>
+
+      <div class="after">
+        <button class="btn btn-main" data-next="4" type="button">Keep going</button>
+      </div>
+    </section>
+
+    <!-- 4 · cake -->
+    <section class="level" id="lv-cake" data-level="4" hidden>
+      <h2 class="display">22 candles</h2>
+      <p class="lede">Make a wish. Not a dumb one. Then blow into your phone's mic.</p>
+      <div class="cake" id="cake">
+        <div class="candles" id="candles"></div>
+        <div class="tier tier-top"></div>
+        <div class="tier tier-bottom"></div>
+        <div class="plate"></div>
+      </div>
+      <div class="choice">
+        <button class="btn btn-main" id="blowBtn" type="button">Blow out the candles</button>
+        <button class="btn btn-ghost" id="tapBlow" type="button">My mic is shy</button>
+      </div>
+      <p class="cake-msg" id="cakeMsg" aria-live="polite"></p>
+      <div class="after" id="cakeAfter" hidden>
+        <button class="btn btn-main" data-next="5" type="button">Keep going</button>
+      </div>
+    </section>
+
+    <!-- 5 · timeline -->
+    <section class="level" id="lv-time" data-level="5" hidden>
+      <h2 class="display">Three years of wishing you</h2>
+      <ol class="timeline">
+        <li>
+          <span class="tl-year">2024</span>
+          <span class="tl-status late">Almost a day late</span>
+          <blockquote>"Happy birthday samiya <span class="redact" aria-label="surname redacted"></span> have a good day ig."</blockquote>
+          <p>Defence submitted at the time: "Dates are subjective."</p>
+        </li>
+        <li>
+          <span class="tl-year">2025</span>
+          <span class="tl-status ok">On time</span>
+          <blockquote>"Happy birthday Dumbo." "Ur big 16."</blockquote>
+          <p>You: "19 😞"</p>
+        </li>
+        <li>
+          <span class="tl-year">2026</span>
+          <span class="tl-status best">On time, Pakistani 12, plus a website</span>
+          <blockquote>You're reading it.</blockquote>
+          <p>22 this time. Ali says almost expiring.</p>
+        </li>
+      </ol>
+      <div class="after">
+        <button class="btn btn-main" data-next="6" type="button">Open the letter</button>
+      </div>
+    </section>
+
+    <!-- 6 · letter -->
+    <section class="level" id="lv-letter" data-level="6" hidden>
+      <article class="letter" id="letter">
+        <p>Happy birthday Dumbo. 22. Almost expiring now.</p>
+        <p>Before you say anything, yes, I'm on time. 12 o'clock, Pakistani 12. Took me three years but I got there. In 2024 I was almost a day late because dates are subjective. In 2025 I was on time but called you a 16-year-old. So this year I made you a whole website to show how much idgaf.</p>
+        <p>I'm bad at saying things. I call you <span class="w" data-w="noob">noob</span>, <span class="w" data-w="idiot">idiot</span>, <span class="w" data-w="pagal">pagal</span>. I say "don't care didn't ask" and "thanks now go away." You take it the wrong way half the time, then you ask what I meant, and I say "aap samjho gi nahi aur mein samjhana nahi chahta." Very annoying of me. I know.</p>
+        <p>So just this once I'll explain. Translation guide, keep it safe:</p>
+        <dl class="dict">
+          <div><dt>"Noob"</dt><dd>you did better than me and I'm coping</dd></div>
+          <div><dt>"Idiot"</dt><dd>text me when you get home</dd></div>
+          <div><dt>"Pagal ho"</dt><dd>I laughed out loud and I'm not admitting it</dd></div>
+          <div><dt>"Kiya masla hai"</dt><dd>I'm happy you texted</dd></div>
+          <div><dt>"Don't care didn't ask"</dt><dd>yes, I'm listening</dd></div>
+          <div><dt>"Go away / get lost"</dt><dd>don't go anywhere</dd></div>
+          <div><dt>"I care about you thora sa"</dt><dd>that one wasn't a joke. Remove the thora sa. (Sometimes.)</dd></div>
+        </dl>
+        <p>Anyways...</p>
+        <p>You're the one who says "khana khalo" when I'm being a dramatic sick man. Who makes me play Silksong just so she can watch, then complains I never watch anything with her. Who sends reels and I pretend I don't watch (I watch all of them). Who misses Hollow Knight more than I do.</p>
+        <p>We fight. A lot. Sometimes you think I'm against you. I'm not. I'm just bad at this, and the opposite of what I mean comes out first. But I've never not been on your side. Even when I'm being petty. Especially then, actually.</p>
+        <p>So for 22: I hope uni gets easier, the gym actually works (it won't if you keep eating ice cream hehe), you find a cat that lets you pick it up, you get every Wordle in 2, and you stop thinking nobody remembers your birthday on time.</p>
+        <p>Ok, that's enough. This was cringe. If you screenshot this, I'll deny everything. And this doesn't mean I don't have my issues with you, but it's your birthday so I'll let it slide.</p>
+        <p>Happy birthday Samiya. Genuinely.</p>
+        <p>Now get lost.<br><span class="aside">(Check the translation guide.)</span></p>
+        <p class="sign">– Ali</p>
+      </article>
+      <div class="after">
+        <button class="btn btn-main" id="getLost" type="button">Get lost</button>
+      </div>
+      <div class="finale" id="finale" hidden>
+        <p class="display finale-big">You're still here.</p>
+        <p class="lede">Good. (See: translation guide, line six.)</p>
+        <p class="egg-report" id="eggReport"></p>
+        <ul class="egg-list" id="eggList"></ul>
+        <button class="btn btn-ghost" id="replay" type="button">Start over</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Kuku, the grumpy guide -->
+  <div class="kuku-dock">
+    <p class="bubble" id="bubble" role="status" aria-live="polite"></p>
+    <button class="kuku" id="kuku" type="button" aria-label="Kuku, the grumpy cat. Tap to pet.">
+      <img id="kukuImg" class="kuku-src" alt="" width="374" height="280" draggable="false" />
+      <span class="blush blush-l" aria-hidden="true"></span>
+      <span class="blush blush-r" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <div class="landscape-nag" aria-hidden="true">
+    <img class="kuku-src" alt="" />
+    <p>Phone seedha karo.<br>This is a portrait birthday.</p>
+  </div>
+  <div class="rain" id="rain" aria-hidden="true"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
